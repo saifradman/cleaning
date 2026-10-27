@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WEBGL Grid</title>
+    <meta name='robots' content='max-image-preview:large' />
+    <style>
+        img:is([sizes="auto" i], [sizes^="auto," i]) {
+            contain-intrinsic-size: 3000px 1500px
+        }
+    </style>
+    <link rel='dns-prefetch' href='//fonts.googleapis.com' />
+    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+    
+    <noscript></noscript>
+    <link rel="canonical" href="./" />
+    <link rel="icon" href="./wp-content/uploads/sites/37/2026/02/zeyna_favicon-150x150.png" sizes="32x32" />
+    <link rel="icon" href="./wp-content/uploads/sites/37/2026/02/zeyna_favicon-300x300.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="./wp-content/uploads/sites/37/2026/02/zeyna_favicon-300x300.png" />
+    <meta name="msapplication-TileImage" content="./wp-content/uploads/sites/37/2026/02/zeyna_favicon-300x300.png" />
+    <style type="text/css" media="all">
+        img.wp-smiley,
+        img.emoji {
+            display: inline !important;
+            border: none !important;
+            box-shadow: none !important;
+            height: 1em !important;
+            width: 1em !important;
+            margin: 0 0.07em !important;
+            vertical-align: -0.1em !important;
+            background: none !important;
+            padding: 0 !important
+        }
+    </style>
+    <!-- Standalone Offline Resiliency & AJAX Stub -->
+    <script>
+    (function() {
+        // Safe check for window loading state
+        window.__pageReady = false;
+        window.addEventListener('load', function() { window.__pageReady = true; });
+        if (document.readyState === 'complete') window.__pageReady = true;
+
+        // Stub jQuery ajax for missing WordPress endpoints
+        function setupAjaxStub() {
+            if (window.jQuery && window.jQuery.ajaxPrefilter) {
+                window.jQuery.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+                    var u = (options.url || '').toLowerCase();
+                    if (u.indexOf('admin-ajax.php') !== -1 || u.indexOf('admin-ajax') !== -1) {
+                        options.beforeSend = function(xhr) {
+                            setTimeout(function() {
+                                var data = originalOptions.data || {};
+                                var res = { success: true, data: "Subscription successful!" };
+                                if (data.action === 'pe_get_projects' || data.action === 'pe_get_posts') {
+                                    res = { success: true, data: { posts: "", pages: 1 } };
+                                }
+                                if (originalOptions.success) originalOptions.success(res);
+                                if (originalOptions.complete) originalOptions.complete(xhr, "success");
+                            }, 150);
+                            return false;
+                        };
+                    }
+                });
+            } else {
+                setTimeout(setupAjaxStub, 50);
+            }
+        }
+        setupAjaxStub();
+
+        // Auto pause/play offscreen HTML5 videos and WebGL observers
+        if ('IntersectionObserver' in window) {
+            var mediaObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.target.tagName === 'VIDEO') {
+                        if (entry.isIntersecting) {
+                            entry.target.play().catch(function() {});
+                        } else {
+                            entry.target.pause();
+                        }
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('video').forEach(function(v) {
+                mediaObserver.observe(v);
+            });
+        }
+
+
+        // Ensure all multi-page navigation links work cleanly without Barba locking
+        document.addEventListener('DOMContentLoaded', function() {
+            var allLinks = document.querySelectorAll('a[href]');
+            allLinks.forEach(function(a) {
+                var h = a.getAttribute('href') || '';
+                // Ensure Barba does not intercept multi-page transitions between WebGL grid and works page
+                if (h.indexOf('works') !== -1 || h.indexOf('portfolio') !== -1 || h === './' || h === '../' || h === '/') {
+                    a.setAttribute('data-barba-prevent', 'all');
+                } else if (h.startsWith('#')) {
+                    a.setAttribute('data-barba-prevent', 'all');
+                    a.addEventListener('click', function(e) {
+                        e.preventDefault();
+                    });
+                }
+            });
+        });
+
+        // Immediate initialization without preloader delay
+        document.documentElement.classList.remove('loading', 'first--load');
+    })();
+    </script>
+
+    <link rel="stylesheet" href="./wp-content/themes/zeyna/assets/fonts/local-fonts.css" />
+    <link type="text/css" media="all" href="./wp-content/cache/breeze-minification/37/css/zeyna-home-bundle.min.css" rel="stylesheet" />
+    <link type="text/css" media="all" href="./wp-content/cache/breeze-minification/37/css/breeze_works-37-16788-elementor-css-post-16467.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./custom.css" />
+    <style id="home-webgl-dynamic-settings">
+        /* Desktop Screens (> 1024px) */
+        @media (min-width: 1025px) {
+            .elementor-16780 .elementor-element.elementor-element-5fc0c992,
+            .pe--webgl--grid {
+                --gridCols: 4 !important;
+                --gridRows: 3 !important;
+                --gridGap: 15px !important;
+                --imagesWidth: 335px !important;
+                --imagesHeight: 200px !important;
+            }
+            .elementor-16780 .elementor-element.elementor-element-5fc0c992 .pe--webgl--grid--controls {
+                bottom: 80px !important;
+            }
+        }
+
+        /* Tablet Screens (768px - 1024px) */
+        @media (max-width: 1024px) and (min-width: 768px) {
+            .elementor-16780 .elementor-element.elementor-element-5fc0c992,
+            .pe--webgl--grid {
+                --gridCols: 6 !important;
+                --gridRows: 4 !important;
+                --gridGap: 15px !important;
+                --imagesWidth: 103px !important;
+                --imagesHeight: 138px !important;
+            }
+            .elementor-16780 .elementor-element.elementor-element-5fc0c992 .pe--webgl--grid--wrapper {
+                bottom: 230px !important;
+            }
+            .elementor-16780 .elementor-element.elementor-element-5fc0c992 .pe--webgl--grid--controls {
+                bottom: 78px !important;
+            }
+        }
+
+        /* Mobile Screens (< 768px) */
+        @media (max-width: 767px) {
+            .elementor-16780 .elementor-element.elementor-element-5fc0c992,
+            .pe--webgl--grid {
+                --gridCols: 2 !important;
+                --gridRows: 2 !important;
+                --gridGap: 15px !important;
+                --imagesWidth: 116px !important;
+                --imagesHeight: 69px !important;
+            }
+            .elementor-16780 .elementor-element.elementor-element-5fc0c992 .pe--webgl--grid--wrapper {
+                bottom: 125px !important;
+            }
+            .elementor-16780 .elementor-element.elementor-element-5fc0c992 .pe--webgl--grid--controls {
+                bottom: 78px !important;
+            }
+        }
+
+        /* Controls & Arrows Visibility & Sizing */
+        
+        
+        .pe--webgl--grid--controls .grid--switch.grid--count { display: none !important; }
+        
+        
+    </style>
+</head>
+
+<body class="home wp-singular page-template-default page page-id-16780 wp-theme-zeyna show--footer layout--default smooth-scroll lenis-scroll-vertical elementor-default elementor-kit-3 elementor-page elementor-page-16780"
+    data-barba="wrapper"> <span hidden class="layout--colors"></span>
+    <div id="page" class="site"><a class="skip-link screen-reader-text" href="#primary">Skip to content</a>
+        <div id="mouseCursor" class="cursor--square "><svg height="100%" width="100%" viewbox="0 0 100 100"> <rect width="200" height="100" x="10" y="10" rx="0" ry="0" fill="var(--mainColor)" /> </svg><span class="cursor-text"></span> <span class="cursor-icon"></span><span class="cursor--drag--icons"> </span></div>
+        <div
+            data-stagger=start data-type="rows" data-direction="up" class="page--transitions pt__rows pt__right   ">
+            <div class="pt--wrapper "><span class="page--transition--row" style="--index: 0; --grid:10"></span><span class="page--transition--row" style="--index: 1; --grid:10"></span><span class="page--transition--row" style="--index: 2; --grid:10"></span><span class="page--transition--row"
+                    style="--index: 3; --grid:10"></span><span class="page--transition--row" style="--index: 4; --grid:10"></span><span class="page--transition--row" style="--index: 5; --grid:10"></span><span class="page--transition--row" style="--index: 6; --grid:10"></span>
+                <span
+                    class="page--transition--row" style="--index: 7; --grid:10"></span><span class="page--transition--row" style="--index: 8; --grid:10"></span><span class="page--transition--row" style="--index: 9; --grid:10"></span>
+                    <div class="pt--element v-align-middle h-align-center pt--logo">
+                        <div class="pt--element--wrap"></div>
+                    </div>
+            </div>
+    </div>
+    <header id="masthead" class="site-header header--template pe-items-center header--sticky header--default header--auto--switch">
+        <div data-elementor-type="pe-header" data-elementor-id="16435" class="elementor elementor-16435">
+            <div class="elementor-element elementor-element-5f5e071f e-con-full e-flex no e-con e-parent" data-id="5f5e071f" data-element_type="container" data-e-type="container">
+                <div class="elementor-element elementor-element-3c93dccf e-con-full e-flex no e-con e-child" data-id="3c93dccf" data-element_type="container" data-e-type="container">
+                    <div class="elementor-element elementor-element-3fdd7676 elementor-widget__width-initial no elementor-widget elementor-widget-pesitelogo" data-id="3fdd7676" data-element_type="widget" data-e-type="widget" data-widget_type="pesitelogo.default">
+                        <div class="elementor-widget-container">
+                            <div class="site-branding pe--styled--object align-left">
+                                <div class="site-logo"><a href="./"><img fetchpriority="high" width="344" height="244" src="./wp-content/uploads/sites/37/2026/02/zeyna_symbol_black.svg" class="main__logo" fetchpriority="high" alt="" decoding="async" /><img width="344" height="244" src="./wp-content/uploads/sites/37/2026/02/zeyna_symbol_white.svg" class="secondary__logo" alt="" decoding="async" /> </a></div>
+                                <div
+                                    class="sticky-logo"><a href="./"> </a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="elementor-element elementor-element-43611be0 elementor-widget__width-initial elementor-hidden-mobile marquee--autoplay elementor-widget elementor-widget-pemarquee" data-id="43611be0" data-element_type="widget" data-e-type="widget"
+                    data-widget_type="pemarquee.default">
+                    <div class="elementor-widget-container">
+                        <h6 class="pe-marquee pe--styled--object
+rotating_seperator right-to-left counter-clockwise  cursor-default" data-duration=60 data-sepduration=10><span class="">Saif Radman, Based in Cyprus</span>
+                            <div class="seperator "></div>
+                        </h6>
+                    </div>
+                </div>
+            </div>
+            <div class="elementor-element elementor-element-693e7eb8 e-con-full e-flex no e-con e-child" data-id="693e7eb8" data-element_type="container" data-e-type="container">
+                <div class="elementor-element elementor-element-75a1d982 elementor-hidden-mobile icon--fill--yes elementor-widget elementor-widget-peicon" data-id="75a1d982" data-element_type="widget" data-e-type="widget" data-widget_type="peicon.default">
+                    <div class="elementor-widget-container">
+                        <div data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon="" class="pe--icon pe--styled--object pe--link">
+                            <a class="pe--styled--object" href="https://www.instagram.com/pe.themes" target="_blank" rel="nofollow noopener noreferrer" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon="">
+                                <div class="pe--icon--wrap " data-duration="1" data-delay="0" data-fade=""> <span data-icon-hover="slide-up" class="pe--icon--hover"> <span></span><span class="icon--hover--wrap"></span> </span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="elementor-element elementor-element-4dd8e57c menu--horizontal hover--opacity active--opacity menu__flex--styled menu--items--seperator elementor-widget-mobile__width-initial sub--style--default sub--behavior--hover menu--items--align--left st--icon--row elementor-widget elementor-widget-penavmenu"
+                    data-id="4dd8e57c" data-element_type="widget" data-e-type="widget" data-widget_type="penavmenu.default">
+                    <div class="elementor-widget-container">
+                        <nav id="site-navigation" class="text--anim--multi main-navigation st--only" data-sub-toggle="&lt;span class=&quot;sub--toggle st--plus&quot;&gt;&lt;span class=&quot;toggle--line&quot;&gt;&lt;/span&gt;&lt;span class=&quot;toggle--line&quot;&gt;&lt;/span&gt;&lt;/span&gt;">
+                            <ul id="menu-menu-2" class="menu main-menu menu--horizontal ">
+                                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-16780 current_page_item menu-item-16793"><a href="./" aria-current="page" class="pe--styled--object  text--anim--inner menu--link">Home</a></li>
+                                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16795"><a href="./works/" data-barba-prevent="all" class="pe--styled--object  text--anim--inner menu--link">Works</a></li>
+                                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-store menu-item-16796"><a href="./store/" data-barba-prevent="all" class="pe--styled--object  text--anim--inner menu--link">Store</a></li>
+                                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16794"><a href="./services/" data-barba-prevent="all" class="pe--styled--object  text--anim--inner menu--link">Services</a></li>
+                                <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-16792"><a href="./contact/" data-barba-prevent="all" class="pe--styled--object  text--anim--inner menu--link">Contact</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="elementor-element elementor-element-6504ad77 elementor-widget-mobile__width-initial elementor-widget elementor-widget-pelayoutswitcher" data-id="6504ad77" data-element_type="widget" data-e-type="widget" data-widget_type="pelayoutswitcher.default">
+                    <div class="elementor-widget-container">
+                        <div data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon="" class="pe-layout-switcher pe--styled--object ls_switcher">
+                            <div class="pl--switch"> <span class="pl--follower"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </header>
+        <main id="primary" class="site-main" data-barba="container">
+        <article id="post-16780" class="post-16780 page type-page status-publish hentry">
+            <div class="entry-content">
+                <div data-elementor-type="wp-page" data-elementor-id="16780" class="elementor elementor-16780">
+                    <div class="elementor-element elementor-element-45c08d2d e-con-full e-flex no e-con e-parent" data-id="45c08d2d" data-element_type="container" data-e-type="container">
+                        <div class="elementor-element elementor-element-5fc0c992 bt--sharp bt--row-reverse projects--hover--none elementor-widget elementor-widget-peshowcasewebglgrid" data-id="5fc0c992" data-element_type="widget" data-e-type="widget" data-settings="{&quot;taxonomies_list&quot;:[{&quot;_id&quot;:&quot;67a3283&quot;,&quot;select_taxonomy&quot;:&quot;project-categories&quot;,&quot;list_pos_vertical_offset_top&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;75&quot;,&quot;sizes&quot;:[]},&quot;list_pos_vertical_offset_bottom&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;75&quot;,&quot;sizes&quot;:[]},&quot;list_pos_transform_y&quot;:{&quot;unit&quot;:&quot;%&quot;,&quot;size&quot;:&quot;0&quot;,&quot;sizes&quot;:[]},&quot;list_pos_horizontal_offset_left&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;50&quot;,&quot;sizes&quot;:[]},&quot;list_pos_horizontal_offset_right&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;50&quot;,&quot;sizes&quot;:[]},&quot;list_pos_transform_x&quot;:{&quot;unit&quot;:&quot;%&quot;,&quot;size&quot;:&quot;0&quot;,&quot;sizes&quot;:[]},&quot;list_items_bg_backdrop_blur&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;10&quot;,&quot;sizes&quot;:[]},&quot;list_items_custom_box_shadow&quot;:{&quot;horizontal&quot;:&quot;0&quot;,&quot;vertical&quot;:&quot;0&quot;,&quot;blur&quot;:&quot;10&quot;,&quot;spread&quot;:&quot;0&quot;,&quot;color&quot;:&quot;rgba(0,0,0,0.5)&quot;},&quot;list_pos_positioning&quot;:null,&quot;list_pos_vertical_orientation&quot;:&quot;top&quot;,&quot;list_pos_horizontal_orientation&quot;:&quot;left&quot;}],&quot;show_taxonomies&quot;:&quot;taxonomies--on&quot;,&quot;show_button&quot;:&quot;button--on&quot;,&quot;show_acf_fields&quot;:&quot;true&quot;,&quot;link_behavior&quot;:&quot;default&quot;}"
+                            data-widget_type="peshowcasewebglgrid.default">
+                            <div class="elementor-widget-container">
+                                <div class="pe--webgl--grid">
+                                    <div class="pe--webgl--grid--wrapper">
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11407" data-id="11407" data-url="./portfolio/parode/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-768x768.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Parode" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-768x768.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-768x768.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-768x768.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-768x768.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Parode</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Marketing</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/parode/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11469" data-id="11469" data-url="./portfolio/kangge/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Kangge" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Kangge</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Branding</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/kangge/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11531" data-id="11531" data-url="./portfolio/slow-sunday/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-28-768x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Slow ~ Sunday" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-28-768x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-28-768x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-28-768x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-28-768x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Slow ~ Sunday</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Marketing</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/slow-sunday/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11593" data-id="11593" data-url="./portfolio/glow-tide/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Glow Tide" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Glow Tide</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Branding</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/glow-tide/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11655" data-id="11655" data-url="./portfolio/liko-creative/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Liko Creative" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Liko Creative</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Web Design</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/liko-creative/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11717" data-id="11717" data-url="./portfolio/mira-co/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Mira &amp; Co." srcset="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-35-768x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Mira &amp; Co.</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Web Design</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/mira-co/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11779" data-id="11779" data-url="./portfolio/luma-journal/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-20-768x768.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Luma Journal" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-20-768x768.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-20-768x768.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-20-768x768.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-20-768x768.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Luma Journal</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">UI/UX Design</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/luma-journal/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11841" data-id="11841" data-url="./portfolio/velora/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Velora" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Velora</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Branding</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/velora/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11903" data-id="11903" data-url="./portfolio/castio/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Castio" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Castio</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Branding</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/castio/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--11965" data-id="11965" data-url="./portfolio/ice-mood/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Ice Mood" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-32-768x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Ice Mood</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Branding</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/ice-mood/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--12027" data-id="12027" data-url="./portfolio/innerpeace/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-22-768x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="Innerpeace" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_3x4-22-768x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-22-768x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-22-768x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_3x4-22-768x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">Innerpeace</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">UI/UX Design</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/innerpeace/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                        <div class="pe--webgl--project barba--webgl--trigger webgl--project--12089" data-id="12089" data-url="./portfolio/in-art-we-trust/"> <img loading="lazy" decoding="async" width="640" height="853" src="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp" class="attachment-medium_large size-medium_large "
+                                                alt="In Art We Trust" srcset="./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 768w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 225w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 1152w, ./wp-content/uploads/sites/37/2025/07/project_featured_4x4-21-1024x1024.webp 1500w"
+                                                sizes="(max-width: 640px) 100vw, 640px" />
+                                            <div class="pe--webgl--project--title">In Art We Trust</div>
+                                            <div class="pe--webgl--project--meta" style="color: var(--secondaryColor)">
+                                                <div class="project--taxonomies--wrap">
+                                                    <div class="project--taxonomies--list  elementor-repeater-item-67a3283 taxonomy-project-categories">
+                                                        <p class="pe--styled--object project--taxonomy taxonomy--15">Branding</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="pe--button  project--button button--sharp hover--default button-- ">
+                                                <div class="pe--button--wrapper"><a href="./portfolio/in-art-we-trust/" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW PROJECT </span> <span class="pe--button--icon pe--styled--object"> <i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i> </span> </a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pe--webgl--grid--controls">
+                                        <div class="pe--webgl--grid--controls--wrapper">
+                                            <div class="grid--switch grid--nav grid--item--prev" title="Previous Card"> <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="var(--mainColor)"> <path d="m294.92-450 227.85 227.85L480-180 180-480l300-300 42.77 42.15L294.92-510H780v60H294.92Z" /> </svg></div>
+                                            
+                                            
+                                            <div class="grid--switch grid--zoom" data-scale=1><span>ZOOM IN</span><span>ZOOM OUT</span></div>
+                                            
+                                            <div class="grid--switch grid--nav grid--item--next" title="Next Card"> <svg xmlns="http://www.w3.org/2000/svg" height="14px" viewBox="0 -960 960 960" width="14px" fill="var(--mainColor)"> <path d="M665.08-450H180v-60h485.08L437.23-737.85 480-780l300 300-300 300-42.77-42.15L665.08-450Z" /> </svg></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <div class="elementor-element elementor-element-520d1b7f e-con-full container--pointer--events--none e-flex no e-con e-child" data-id="520d1b7f" data-element_type="container" data-e-type="container" data-settings="{&quot;position&quot;:&quot;absolute&quot;}">
+                        <div class="elementor-element elementor-element-5a822d70 e-con-full e-flex no e-con e-child" data-id="5a822d70" data-element_type="container" data-e-type="container">
+                            <div class="elementor-element elementor-element-6f28b1e text--align--left text-stroke-no elementor-widget elementor-widget-petextwrapper" data-id="6f28b1e" data-element_type="widget" data-e-type="widget" data-widget_type="petextwrapper.default">
+                                <div class="elementor-widget-container">
+                                    <div class="text-wrapper pe--styled--object">
+                                        <p class="no-margin  use--sec--color ">SELECTED ARCHIVE <br> 2019 — 2026</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-27bb7dc2 e-con-full container--pointer--events--all e-flex no e-con e-child" data-id="27bb7dc2" data-element_type="container" data-e-type="container">
+                            <div class="elementor-element elementor-element-6d741420 bt--sharp bt--row-reverse elementor-widget elementor-widget-pebutton" data-id="6d741420" data-element_type="widget" data-e-type="widget" data-widget_type="pebutton.default">
+                                <div class="elementor-widget-container">
+                                    <div class="pe--button   button--sharp hover--custom button-- " data-text-hover="none" data-background-hover="none" data-icon-hover="slide-right">
+                                        <div class="pe--button--wrapper"><a class="pb--handle" href="./works/" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> VIEW ALL</span> <span class="pe--button--icon pe--styled--object"> <span class="button--icon--main"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> <span class="button--icon--hover"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> </span> </a></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </article>
+    </main>
+    <footer id="colophon" class="site-footer footer--overlay">
+        <div data-elementor-type="pe-footer" data-elementor-id="16467" class="elementor elementor-16467">
+            <div class="elementor-element elementor-element-1f8b010a e-con-full layout--switched e-flex bg--color bg_backdrop_false curved_false no e-con e-parent" data-id="1f8b010a" data-element_type="container" data-e-type="container">
+                <div class="elementor-element elementor-element-46424e54 e-con-full scrubbed__true e-flex no e-con e-child" data-id="46424e54" data-element_type="container" data-e-type="container">
+                    <div class="elementor-element elementor-element-3ade8452 e-con-full e-flex no e-con e-child" data-id="3ade8452" data-element_type="container" data-e-type="container">
+                        <div class="elementor-element elementor-element-4ad9c19f text--align--left text-stroke-no elementor-widget elementor-widget-petextwrapper" data-id="4ad9c19f" data-element_type="widget" data-e-type="widget" data-widget_type="petextwrapper.default">
+                            <div class="elementor-widget-container">
+                                <div class="text-wrapper pe--styled--object">
+                                    <p class="no-margin  use--sec--color ">NAVIGATE</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-bc742cf hover--opacity active--opacity menu__flex--styled menu--vertical sub--style--default sub--behavior--hover menu--items--align--left st--icon--row elementor-widget elementor-widget-penavmenu"
+                            data-id="bc742cf" data-element_type="widget" data-e-type="widget" data-widget_type="penavmenu.default">
+                            <div class="elementor-widget-container">
+                                <nav id="site-navigation" class="text--anim--multi main-navigation st--only" data-sub-toggle="&lt;span class=&quot;sub--toggle st--plus&quot;&gt;&lt;span class=&quot;toggle--line&quot;&gt;&lt;/span&gt;&lt;span class=&quot;toggle--line&quot;&gt;&lt;/span&gt;&lt;/span&gt;">
+                                    <ul id="menu-menu-4" class="menu main-menu menu--vertical ">
+                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item current_page_item menu-item-home menu-item-16793"><a href="./" aria-current="page" class="pe--styled--object  text--anim--inner menu--link">Home</a></li>
+                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-works menu-item-16795"><a href="./works/" data-barba-prevent="all" class="pe--styled--object  text--anim--inner menu--link">Works</a></li>
+                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-store menu-item-16796"><a href="./store/" data-barba-prevent="all" class="pe--styled--object  text--anim--inner menu--link">Store</a></li>
+                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-services menu-item-16794"><a href="./services/" data-barba-prevent="all" class="pe--styled--object  text--anim--inner menu--link">Services</a></li>
+                                        <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-contact menu-item-16792"><a href="./contact/" data-barba-prevent="all" class="pe--styled--object  text--anim--inner menu--link">Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="elementor-element elementor-element-496e1827 e-con-full e-flex no e-con e-child" data-id="496e1827" data-element_type="container" data-e-type="container">
+                        <div class="elementor-element elementor-element-65fabe98 text--align--left text-stroke-no elementor-widget elementor-widget-petextwrapper" data-id="65fabe98" data-element_type="widget" data-e-type="widget" data-widget_type="petextwrapper.default">
+                            <div class="elementor-widget-container">
+                                <div class="text-wrapper pe--styled--object">
+                                    <p class="no-margin  use--sec--color ">NEW BUSINESSES</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-7b586fd4 bt--simple bt--row-reverse elementor-widget elementor-widget-pebutton" data-id="7b586fd4" data-element_type="widget" data-e-type="widget" data-widget_type="pebutton.default">
+                            <div class="elementor-widget-container">
+                                <div class="pe--button   button--simple hover--custom button-- " data-text-hover="none" data-background-hover="none" data-icon-hover="slide-right">
+                                    <div class="pe--button--wrapper"><a class="pb--handle" href="mailto:saif.radman3@gmail.com" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> saif.radman3@gmail.com </span> <span class="pe--button--icon pe--styled--object"> <span class="button--icon--main"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> <span class="button--icon--hover"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> </span> </a></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-222344ff bt--simple bt--row-reverse elementor-widget elementor-widget-pebutton" data-id="222344ff" data-element_type="widget" data-e-type="widget" data-widget_type="pebutton.default">
+                            <div class="elementor-widget-container">
+                                <div class="pe--button   button--simple hover--custom button-- " data-text-hover="none" data-background-hover="none" data-icon-hover="slide-right">
+                                    <div class="pe--button--wrapper"><a href="tel:+442079460000" rel="nofollow" class="pb--handle" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> +44 20 7946 0000</span> <span class="pe--button--icon pe--styled--object"> <span class="button--icon--main"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> <span class="button--icon--hover"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> </span> </a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="elementor-element elementor-element-1b2dd446 e-con-full e-flex no e-con e-child" data-id="1b2dd446" data-element_type="container" data-e-type="container">
+                        <div class="elementor-element elementor-element-f07000d text--align--left text-stroke-no elementor-widget elementor-widget-petextwrapper" data-id="f07000d" data-element_type="widget" data-e-type="widget" data-widget_type="petextwrapper.default">
+                            <div class="elementor-widget-container">
+                                <div class="text-wrapper pe--styled--object">
+                                    <p class="no-margin  use--sec--color ">MAIN HUB, NYC</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-6fc81d27 text--align--left text-stroke-no elementor-widget elementor-widget-petextwrapper" data-id="6fc81d27" data-element_type="widget" data-e-type="widget" data-widget_type="petextwrapper.default">
+                            <div class="elementor-widget-container">
+                                <div class="text-wrapper pe--styled--object">
+                                    <p class="no-margin   ">23 Bedford Square WC1B 3HH <br>London, United Kingdom</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-2d4abeee bt--sharp bt--row-reverse elementor-widget elementor-widget-pebutton" data-id="2d4abeee" data-element_type="widget" data-e-type="widget" data-widget_type="pebutton.default">
+                            <div class="elementor-widget-container">
+                                <div class="pe--button   button--sharp hover--custom button-- " data-text-hover="none" data-background-hover="none" data-icon-hover="slide-right">
+                                    <div class="pe--button--wrapper"><a class="pb--handle" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> GET DIRECTIONS</span> <span class="pe--button--icon pe--styled--object"> <span class="button--icon--main"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> <span class="button--icon--hover"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> </span> </a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="elementor-element elementor-element-143f0802 e-con-full e-flex no e-con e-child" data-id="143f0802" data-element_type="container" data-e-type="container">
+                        <div class="elementor-element elementor-element-2fdeb8c5 text--align--left text-stroke-no elementor-widget elementor-widget-petextwrapper" data-id="2fdeb8c5" data-element_type="widget" data-e-type="widget" data-widget_type="petextwrapper.default">
+                            <div class="elementor-widget-container">
+                                <div class="text-wrapper pe--styled--object">
+                                    <p class="no-margin   ">Join our newsletter to get design insights and digital strategy tips.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-74260332 validate--colors bt--bordered bt--row-reverse submit_button_button_icon--pop--styled elementor-widget elementor-widget-peforms" data-id="74260332" data-element_type="widget"
+                            data-e-type="widget" data-settings="{&quot;required_field_message&quot;:&quot;This field is required&quot;,&quot;invalid_email_message&quot;:&quot;Invalid email address&quot;,&quot;invalid_tel_message&quot;:&quot;Invalid phone number&quot;,&quot;invalid_number_message&quot;:&quot;Invalid number&quot;,&quot;invalid_url_message&quot;:&quot;Invalid URL&quot;,&quot;multi_select_message&quot;:&quot;Please select an option&quot;,&quot;required_file_message&quot;:&quot;Please upload a file&quot;,&quot;required_checkbox_message&quot;:&quot;This option is required&quot;,&quot;invalid_date_message&quot;:&quot;Invalid date&quot;}"
+                            data-widget_type="peforms.default">
+                            <div class="elementor-widget-container">
+                                <div class="form--preview"></div>
+                                <div class="pe--form form--custom focus--label">
+                                    <form method="post" class="custom-form-widget-form" data-recaptcha-version="" data-recaptcha-site-key="" data-post-id="16780">
+                                        <div class="form-field elementor-repeater-item-73a01a5 "><label class='label--main' for='field_email'>Your email</label><input autocomplete='text' aria-required=true placeholder='' value='' type='text' name='field_email' id='field_email'></div>
+                                        <div class="pe--form--button--wrap pre--transform pe--form--button--disabled">
+                                            <div class="pe--button   button--bordered hover--custom button-- " data-text-hover="chars-up" data-background-hover="none" data-icon-hover="slide-right">
+                                                <div class="pe--button--wrapper"><button name="submit" class="pb--handle" type="submit" data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon=""> <span class="pe--button--text pe--styled--object"> <span class="button--text--wrap"><span class="button--text--main button--chars--wrap"></span><span class="button--text--hover button--chars--wrap"></span></span> </span> <span class="pe--button--icon pe--styled--object"> <span class="button--icon--main"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> <span class="button--icon--hover"><i aria-hidden="true" class="material-icons md-subdirectory_arrow_right" data-md-icon="subdirectory_arrow_right"></i></span> </span> </button></div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-6f562a56 text--align--left text-stroke-no elementor-widget elementor-widget-petextwrapper" data-id="6f562a56" data-element_type="widget" data-e-type="widget" data-widget_type="petextwrapper.default">
+                            <div class="elementor-widget-container">
+                                <div class="text-wrapper pe--styled--object">
+                                    <p class="no-margin  use--sec--color ">SOCIAL</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="elementor-element elementor-element-2c2c5e1a list--type--classic list--style--none images--style--default hover--none elementor-widget elementor-widget-pelist" data-id="2c2c5e1a" data-element_type="widget" data-e-type="widget"
+                            data-widget_type="pelist.default">
+                            <div class="elementor-widget-container">
+                                <div class="pe--list text--anim--multi">
+                                    <ul class="pe--list--wrapper">
+                                        <li data-index="1" class=" pe--list--item pe--hover--trigger
+pe--styled--object text--anim--inner"> <a data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon="" target="_blank" href="https://www.instagram.com/saifradman" rel="noopener noreferrer"> <span  data-icon-hover="slide-up" class="pe--icon--hover"> <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10.202,2.098c-1.49,.07-2.507,.308-3.396,.657-.92,.359-1.7,.84-2.477,1.619-.776,.779-1.254,1.56-1.61,2.481-.345,.891-.578,1.909-.644,3.4-.066,1.49-.08,1.97-.073,5.771s.024,4.278,.096,5.772c.071,1.489,.308,2.506,.657,3.396,.359,.92,.84,1.7,1.619,2.477,.779,.776,1.559,1.253,2.483,1.61,.89,.344,1.909,.579,3.399,.644,1.49,.065,1.97,.08,5.771,.073,3.801-.007,4.279-.024,5.773-.095s2.505-.309,3.395-.657c.92-.36,1.701-.84,2.477-1.62s1.254-1.561,1.609-2.483c.345-.89,.579-1.909,.644-3.398,.065-1.494,.081-1.971,.073-5.773s-.024-4.278-.095-5.771-.308-2.507-.657-3.397c-.36-.92-.84-1.7-1.619-2.477s-1.561-1.254-2.483-1.609c-.891-.345-1.909-.58-3.399-.644s-1.97-.081-5.772-.074-4.278,.024-5.771,.096m.164,25.309c-1.365-.059-2.106-.286-2.6-.476-.654-.252-1.12-.557-1.612-1.044s-.795-.955-1.05-1.608c-.192-.494-.423-1.234-.487-2.599-.069-1.475-.084-1.918-.092-5.656s.006-4.18,.071-5.656c.058-1.364,.286-2.106,.476-2.6,.252-.655,.556-1.12,1.044-1.612s.955-.795,1.608-1.05c.493-.193,1.234-.422,2.598-.487,1.476-.07,1.919-.084,5.656-.092,3.737-.008,4.181,.006,5.658,.071,1.364,.059,2.106,.285,2.599,.476,.654,.252,1.12,.555,1.612,1.044s.795,.954,1.051,1.609c.193,.492,.422,1.232,.486,2.597,.07,1.476,.086,1.919,.093,5.656,.007,3.737-.006,4.181-.071,5.656-.06,1.365-.286,2.106-.476,2.601-.252,.654-.556,1.12-1.045,1.612s-.955,.795-1.608,1.05c-.493,.192-1.234,.422-2.597,.487-1.476,.069-1.919,.084-5.657,.092s-4.18-.007-5.656-.071M21.779,8.517c.002,.928,.755,1.679,1.683,1.677s1.679-.755,1.677-1.683c-.002-.928-.755-1.679-1.683-1.677,0,0,0,0,0,0-.928,.002-1.678,.755-1.677,1.683m-12.967,7.496c.008,3.97,3.232,7.182,7.202,7.174s7.183-3.232,7.176-7.202c-.008-3.97-3.233-7.183-7.203-7.175s-7.182,3.233-7.174,7.203m2.522-.005c-.005-2.577,2.08-4.671,4.658-4.676,2.577-.005,4.671,2.08,4.676,4.658,.005,2.577-2.08,4.671-4.658,4.676-2.577,.005-4.671-2.079-4.676-4.656h0"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10.202,2.098c-1.49,.07-2.507,.308-3.396,.657-.92,.359-1.7,.84-2.477,1.619-.776,.779-1.254,1.56-1.61,2.481-.345,.891-.578,1.909-.644,3.4-.066,1.49-.08,1.97-.073,5.771s.024,4.278,.096,5.772c.071,1.489,.308,2.506,.657,3.396,.359,.92,.84,1.7,1.619,2.477,.779,.776,1.559,1.253,2.483,1.61,.89,.344,1.909,.579,3.399,.644,1.49,.065,1.97,.08,5.771,.073,3.801-.007,4.279-.024,5.773-.095s2.505-.309,3.395-.657c.92-.36,1.701-.84,2.477-1.62s1.254-1.561,1.609-2.483c.345-.89,.579-1.909,.644-3.398,.065-1.494,.081-1.971,.073-5.773s-.024-4.278-.095-5.771-.308-2.507-.657-3.397c-.36-.92-.84-1.7-1.619-2.477s-1.561-1.254-2.483-1.609c-.891-.345-1.909-.58-3.399-.644s-1.97-.081-5.772-.074-4.278,.024-5.771,.096m.164,25.309c-1.365-.059-2.106-.286-2.6-.476-.654-.252-1.12-.557-1.612-1.044s-.795-.955-1.05-1.608c-.192-.494-.423-1.234-.487-2.599-.069-1.475-.084-1.918-.092-5.656s.006-4.18,.071-5.656c.058-1.364,.286-2.106,.476-2.6,.252-.655,.556-1.12,1.044-1.612s.955-.795,1.608-1.05c.493-.193,1.234-.422,2.598-.487,1.476-.07,1.919-.084,5.656-.092,3.737-.008,4.181,.006,5.658,.071,1.364,.059,2.106,.285,2.599,.476,.654,.252,1.12,.555,1.612,1.044s.795,.954,1.051,1.609c.193,.492,.422,1.232,.486,2.597,.07,1.476,.086,1.919,.093,5.656,.007,3.737-.006,4.181-.071,5.656-.06,1.365-.286,2.106-.476,2.601-.252,.654-.556,1.12-1.045,1.612s-.955,.795-1.608,1.05c-.493,.192-1.234,.422-2.597,.487-1.476,.069-1.919,.084-5.657,.092s-4.18-.007-5.656-.071M21.779,8.517c.002,.928,.755,1.679,1.683,1.677s1.679-.755,1.677-1.683c-.002-.928-.755-1.679-1.683-1.677,0,0,0,0,0,0-.928,.002-1.678,.755-1.677,1.683m-12.967,7.496c.008,3.97,3.232,7.182,7.202,7.174s7.183-3.232,7.176-7.202c-.008-3.97-3.233-7.183-7.203-7.175s-7.182,3.233-7.174,7.203m2.522-.005c-.005-2.577,2.08-4.671,4.658-4.676,2.577-.005,4.671,2.08,4.676,4.658,.005,2.577-2.08,4.671-4.658,4.676-2.577,.005-4.671-2.079-4.676-4.656h0"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10.202,2.098c-1.49,.07-2.507,.308-3.396,.657-.92,.359-1.7,.84-2.477,1.619-.776,.779-1.254,1.56-1.61,2.481-.345,.891-.578,1.909-.644,3.4-.066,1.49-.08,1.97-.073,5.771s.024,4.278,.096,5.772c.071,1.489,.308,2.506,.657,3.396,.359,.92,.84,1.7,1.619,2.477,.779,.776,1.559,1.253,2.483,1.61,.89,.344,1.909,.579,3.399,.644,1.49,.065,1.97,.08,5.771,.073,3.801-.007,4.279-.024,5.773-.095s2.505-.309,3.395-.657c.92-.36,1.701-.84,2.477-1.62s1.254-1.561,1.609-2.483c.345-.89,.579-1.909,.644-3.398,.065-1.494,.081-1.971,.073-5.773s-.024-4.278-.095-5.771-.308-2.507-.657-3.397c-.36-.92-.84-1.7-1.619-2.477s-1.561-1.254-2.483-1.609c-.891-.345-1.909-.58-3.399-.644s-1.97-.081-5.772-.074-4.278,.024-5.771,.096m.164,25.309c-1.365-.059-2.106-.286-2.6-.476-.654-.252-1.12-.557-1.612-1.044s-.795-.955-1.05-1.608c-.192-.494-.423-1.234-.487-2.599-.069-1.475-.084-1.918-.092-5.656s.006-4.18,.071-5.656c.058-1.364,.286-2.106,.476-2.6,.252-.655,.556-1.12,1.044-1.612s.955-.795,1.608-1.05c.493-.193,1.234-.422,2.598-.487,1.476-.07,1.919-.084,5.656-.092,3.737-.008,4.181,.006,5.658,.071,1.364,.059,2.106,.285,2.599,.476,.654,.252,1.12,.555,1.612,1.044s.795,.954,1.051,1.609c.193,.492,.422,1.232,.486,2.597,.07,1.476,.086,1.919,.093,5.656,.007,3.737-.006,4.181-.071,5.656-.06,1.365-.286,2.106-.476,2.601-.252,.654-.556,1.12-1.045,1.612s-.955,.795-1.608,1.05c-.493,.192-1.234,.422-2.597,.487-1.476,.069-1.919,.084-5.657,.092s-4.18-.007-5.656-.071M21.779,8.517c.002,.928,.755,1.679,1.683,1.677s1.679-.755,1.677-1.683c-.002-.928-.755-1.679-1.683-1.677,0,0,0,0,0,0-.928,.002-1.678,.755-1.677,1.683m-12.967,7.496c.008,3.97,3.232,7.182,7.202,7.174s7.183-3.232,7.176-7.202c-.008-3.97-3.233-7.183-7.203-7.175s-7.182,3.233-7.174,7.203m2.522-.005c-.005-2.577,2.08-4.671,4.658-4.676,2.577-.005,4.671,2.08,4.676,4.658,.005,2.577-2.08,4.671-4.658,4.676-2.577,.005-4.671-2.079-4.676-4.656h0"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M18.42,14.009L27.891,3h-2.244l-8.224,9.559L10.855,3H3.28l9.932,14.455L3.28,29h2.244l8.684-10.095,6.936,10.095h7.576l-10.301-14.991h0Zm-3.074,3.573l-1.006-1.439L6.333,4.69h3.447l6.462,9.243,1.006,1.439,8.4,12.015h-3.447l-6.854-9.804h0Z"></path></svg></span> </span> </a></li>
+                                        <li data-index="3" class=" pe--list--item pe--hover--trigger
+pe--styled--object text--anim--inner"> <a data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon="" target="_blank" href="https://www.linkedin.com/company/pethemes" rel="noopener noreferrer"> <span  data-icon-hover="slide-up" class="pe--icon--hover"> <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M26.111,3H5.889c-1.595,0-2.889,1.293-2.889,2.889V26.111c0,1.595,1.293,2.889,2.889,2.889H26.111c1.595,0,2.889-1.293,2.889-2.889V5.889c0-1.595-1.293-2.889-2.889-2.889ZM10.861,25.389h-3.877V12.87h3.877v12.519Zm-1.957-14.158c-1.267,0-2.293-1.034-2.293-2.31s1.026-2.31,2.293-2.31,2.292,1.034,2.292,2.31-1.026,2.31-2.292,2.31Zm16.485,14.158h-3.858v-6.571c0-1.802-.685-2.809-2.111-2.809-1.551,0-2.362,1.048-2.362,2.809v6.571h-3.718V12.87h3.718v1.686s1.118-2.069,3.775-2.069,4.556,1.621,4.556,4.975v7.926Z" fill-rule="evenodd"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M26.111,3H5.889c-1.595,0-2.889,1.293-2.889,2.889V26.111c0,1.595,1.293,2.889,2.889,2.889H26.111c1.595,0,2.889-1.293,2.889-2.889V5.889c0-1.595-1.293-2.889-2.889-2.889ZM10.861,25.389h-3.877V12.87h3.877v12.519Zm-1.957-14.158c-1.267,0-2.293-1.034-2.293-2.31s1.026-2.31,2.293-2.31,2.292,1.034,2.292,2.31-1.026,2.31-2.292,2.31Zm16.485,14.158h-3.858v-6.571c0-1.802-.685-2.809-2.111-2.809-1.551,0-2.362,1.048-2.362,2.809v6.571h-3.718V12.87h3.718v1.686s1.118-2.069,3.775-2.069,4.556,1.621,4.556,4.975v7.926Z" fill-rule="evenodd"></path></svg></span> </span> </a></li>
+                                        <li data-index="4" class=" pe--list--item pe--hover--trigger
+pe--styled--object text--anim--inner"> <a data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon="" target="_blank" href="https://dribbble.com/pethemes" rel="noopener noreferrer"> <span  data-icon-hover="slide-up" class="pe--icon--hover"> <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16,2C8.266,2,2,8.271,2,15.997c0,7.345,5.666,13.374,12.864,13.952v.051h1.136c7.734,0,14-6.271,14-13.997S23.734,2,16,2Zm11.563,12.045c-1.778-.249-3.605-.171-5.391,.21-.352-.988-.805-1.934-1.335-2.838,1.47-.848,2.813-1.914,3.967-3.16,1.41,1.602,2.389,3.591,2.759,5.788Zm-4.416-7.34c-1.039,1.124-2.255,2.08-3.587,2.828-.914-1.161-1.966-2.212-3.145-3.11l-.029-.022-.03-.02s-.003-.002-.008-.006c-.006-.004-.015-.01-.025-.018-.022-.016-.049-.036-.081-.06-.039-.029-.079-.059-.121-.091-.032-.024-.066-.05-.103-.078-.08-.06-.169-.126-.25-.184-.057-.041-.138-.098-.221-.149-.016-.011-.033-.023-.053-.036-.108-.075-.27-.187-.418-.278-.138-.097-.324-.207-.446-.278-.118-.069-.246-.142-.325-.187-.026-.015-.046-.027-.06-.034-.015-.009-.028-.016-.033-.019h0c-.01-.006-.021-.012-.031-.017-.003-.002-.007-.004-.01-.006-.018-.01-.035-.019-.054-.03-.021-.012-.038-.021-.05-.029l-.009-.006-.03-.018c-.11-.067-.224-.128-.286-.161-.008-.004-.015-.008-.021-.012l-.026-.014-.027-.013c-.053-.025-.132-.063-.221-.105,.822-.183,1.676-.282,2.554-.282,2.691,0,5.168,.909,7.147,2.434Zm-12.826-.967s.007,.002,.011,.004c.193,.061,.377,.119,.554,.182,.065,.025,.129,.049,.192,.073,.288,.109,.544,.206,.759,.306l.061,.031,.015,.007c.135,.063,.33,.156,.506,.24,.093,.045,.181,.086,.252,.12,0,0,.002,0,.003,.001,.059,.032,.109,.058,.155,.086,.038,.024,.071,.044,.089,.055,.033,.019,.067,.038,.095,.054,.024,.013,.047,.026,.065,.036,.003,.002,.006,.003,.009,.005,.009,.005,.015,.008,.019,.01h.002c.026,.016,.058,.034,.094,.055,.077,.044,.175,.1,.282,.162,.076,.044,.146,.086,.204,.122,.044,.027,.067,.043,.076,.048,.005,.003,.005,.003,.002,0l.051,.039,.055,.033c.084,.05,.168,.108,.272,.18,.047,.033,.099,.069,.157,.108l.039,.027,.034,.019s0,0,0,0c0,0,.022,.014,.074,.051,.059,.042,.129,.095,.207,.153,.029,.022,.06,.045,.092,.07,.047,.036,.096,.072,.137,.103,.054,.04,.12,.09,.18,.131,.87,.665,1.661,1.429,2.369,2.266-.752,.275-1.527,.49-2.316,.632h0c-1.726,.311-3.489,.32-5.199,.006h-.003s-.003-.001-.003-.001c-1.356-.241-2.671-.679-3.9-1.293,1.058-1.716,2.545-3.139,4.312-4.119ZM4.271,15.997c0-1.443,.262-2.824,.739-4.102,1.42,.707,2.936,1.211,4.497,1.489,1.989,.365,4.027,.353,6.01-.005h0c1.125-.203,2.222-.53,3.276-.961,.472,.784,.872,1.608,1.187,2.467-4.716,1.701-8.834,5.525-10.49,10.865-3.146-2.104-5.22-5.688-5.22-9.753Zm11.729,11.727c-1.578,0-3.083-.314-4.458-.88,1.333-4.797,4.937-8.236,9.068-9.774,.713,3.458,.196,7.16-1.521,10.246-.877,.239-1.794,.381-2.741,.408h-.348Zm6.183-1.757c1.089-3.039,1.298-6.372,.617-9.52,1.642-.332,3.314-.367,4.92-.076-.125,4.052-2.305,7.587-5.537,9.596Z" fill-rule="evenodd"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16,2C8.266,2,2,8.271,2,15.997c0,7.345,5.666,13.374,12.864,13.952v.051h1.136c7.734,0,14-6.271,14-13.997S23.734,2,16,2Zm11.563,12.045c-1.778-.249-3.605-.171-5.391,.21-.352-.988-.805-1.934-1.335-2.838,1.47-.848,2.813-1.914,3.967-3.16,1.41,1.602,2.389,3.591,2.759,5.788Zm-4.416-7.34c-1.039,1.124-2.255,2.08-3.587,2.828-.914-1.161-1.966-2.212-3.145-3.11l-.029-.022-.03-.02s-.003-.002-.008-.006c-.006-.004-.015-.01-.025-.018-.022-.016-.049-.036-.081-.06-.039-.029-.079-.059-.121-.091-.032-.024-.066-.05-.103-.078-.08-.06-.169-.126-.25-.184-.057-.041-.138-.098-.221-.149-.016-.011-.033-.023-.053-.036-.108-.075-.27-.187-.418-.278-.138-.097-.324-.207-.446-.278-.118-.069-.246-.142-.325-.187-.026-.015-.046-.027-.06-.034-.015-.009-.028-.016-.033-.019h0c-.01-.006-.021-.012-.031-.017-.003-.002-.007-.004-.01-.006-.018-.01-.035-.019-.054-.03-.021-.012-.038-.021-.05-.029l-.009-.006-.03-.018c-.11-.067-.224-.128-.286-.161-.008-.004-.015-.008-.021-.012l-.026-.014-.027-.013c-.053-.025-.132-.063-.221-.105,.822-.183,1.676-.282,2.554-.282,2.691,0,5.168,.909,7.147,2.434Zm-12.826-.967s.007,.002,.011,.004c.193,.061,.377,.119,.554,.182,.065,.025,.129,.049,.192,.073,.288,.109,.544,.206,.759,.306l.061,.031,.015,.007c.135,.063,.33,.156,.506,.24,.093,.045,.181,.086,.252,.12,0,0,.002,0,.003,.001,.059,.032,.109,.058,.155,.086,.038,.024,.071,.044,.089,.055,.033,.019,.067,.038,.095,.054,.024,.013,.047,.026,.065,.036,.003,.002,.006,.003,.009,.005,.009,.005,.015,.008,.019,.01h.002c.026,.016,.058,.034,.094,.055,.077,.044,.175,.1,.282,.162,.076,.044,.146,.086,.204,.122,.044,.027,.067,.043,.076,.048,.005,.003,.005,.003,.002,0l.051,.039,.055,.033c.084,.05,.168,.108,.272,.18,.047,.033,.099,.069,.157,.108l.039,.027,.034,.019s0,0,0,0c0,0,.022,.014,.074,.051,.059,.042,.129,.095,.207,.153,.029,.022,.06,.045,.092,.07,.047,.036,.096,.072,.137,.103,.054,.04,.12,.09,.18,.131,.87,.665,1.661,1.429,2.369,2.266-.752,.275-1.527,.49-2.316,.632h0c-1.726,.311-3.489,.32-5.199,.006h-.003s-.003-.001-.003-.001c-1.356-.241-2.671-.679-3.9-1.293,1.058-1.716,2.545-3.139,4.312-4.119ZM4.271,15.997c0-1.443,.262-2.824,.739-4.102,1.42,.707,2.936,1.211,4.497,1.489,1.989,.365,4.027,.353,6.01-.005h0c1.125-.203,2.222-.53,3.276-.961,.472,.784,.872,1.608,1.187,2.467-4.716,1.701-8.834,5.525-10.49,10.865-3.146-2.104-5.22-5.688-5.22-9.753Zm11.729,11.727c-1.578,0-3.083-.314-4.458-.88,1.333-4.797,4.937-8.236,9.068-9.774,.713,3.458,.196,7.16-1.521,10.246-.877,.239-1.794,.381-2.741,.408h-.348Zm6.183-1.757c1.089-3.039,1.298-6.372,.617-9.52,1.642-.332,3.314-.367,4.92-.076-.125,4.052-2.305,7.587-5.537,9.596Z" fill-rule="evenodd"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16,2C8.266,2,2,8.271,2,15.997c0,7.345,5.666,13.374,12.864,13.952v.051h1.136c7.734,0,14-6.271,14-13.997S23.734,2,16,2Zm11.563,12.045c-1.778-.249-3.605-.171-5.391,.21-.352-.988-.805-1.934-1.335-2.838,1.47-.848,2.813-1.914,3.967-3.16,1.41,1.602,2.389,3.591,2.759,5.788Zm-4.416-7.34c-1.039,1.124-2.255,2.08-3.587,2.828-.914-1.161-1.966-2.212-3.145-3.11l-.029-.022-.03-.02s-.003-.002-.008-.006c-.006-.004-.015-.01-.025-.018-.022-.016-.049-.036-.081-.06-.039-.029-.079-.059-.121-.091-.032-.024-.066-.05-.103-.078-.08-.06-.169-.126-.25-.184-.057-.041-.138-.098-.221-.149-.016-.011-.033-.023-.053-.036-.108-.075-.27-.187-.418-.278-.138-.097-.324-.207-.446-.278-.118-.069-.246-.142-.325-.187-.026-.015-.046-.027-.06-.034-.015-.009-.028-.016-.033-.019h0c-.01-.006-.021-.012-.031-.017-.003-.002-.007-.004-.01-.006-.018-.01-.035-.019-.054-.03-.021-.012-.038-.021-.05-.029l-.009-.006-.03-.018c-.11-.067-.224-.128-.286-.161-.008-.004-.015-.008-.021-.012l-.026-.014-.027-.013c-.053-.025-.132-.063-.221-.105,.822-.183,1.676-.282,2.554-.282,2.691,0,5.168,.909,7.147,2.434Zm-12.826-.967s.007,.002,.011,.004c.193,.061,.377,.119,.554,.182,.065,.025,.129,.049,.192,.073,.288,.109,.544,.206,.759,.306l.061,.031,.015,.007c.135,.063,.33,.156,.506,.24,.093,.045,.181,.086,.252,.12,0,0,.002,0,.003,.001,.059,.032,.109,.058,.155,.086,.038,.024,.071,.044,.089,.055,.033,.019,.067,.038,.095,.054,.024,.013,.047,.026,.065,.036,.003,.002,.006,.003,.009,.005,.009,.005,.015,.008,.019,.01h.002c.026,.016,.058,.034,.094,.055,.077,.044,.175,.1,.282,.162,.076,.044,.146,.086,.204,.122,.044,.027,.067,.043,.076,.048,.005,.003,.005,.003,.002,0l.051,.039,.055,.033c.084,.05,.168,.108,.272,.18,.047,.033,.099,.069,.157,.108l.039,.027,.034,.019s0,0,0,0c0,0,.022,.014,.074,.051,.059,.042,.129,.095,.207,.153,.029,.022,.06,.045,.092,.07,.047,.036,.096,.072,.137,.103,.054,.04,.12,.09,.18,.131,.87,.665,1.661,1.429,2.369,2.266-.752,.275-1.527,.49-2.316,.632h0c-1.726,.311-3.489,.32-5.199,.006h-.003s-.003-.001-.003-.001c-1.356-.241-2.671-.679-3.9-1.293,1.058-1.716,2.545-3.139,4.312-4.119ZM4.271,15.997c0-1.443,.262-2.824,.739-4.102,1.42,.707,2.936,1.211,4.497,1.489,1.989,.365,4.027,.353,6.01-.005h0c1.125-.203,2.222-.53,3.276-.961,.472,.784,.872,1.608,1.187,2.467-4.716,1.701-8.834,5.525-10.49,10.865-3.146-2.104-5.22-5.688-5.22-9.753Zm11.729,11.727c-1.578,0-3.083-.314-4.458-.88,1.333-4.797,4.937-8.236,9.068-9.774,.713,3.458,.196,7.16-1.521,10.246-.877,.239-1.794,.381-2.741,.408h-.348Zm6.183-1.757c1.089-3.039,1.298-6.372,.617-9.52,1.642-.332,3.314-.367,4.92-.076-.125,4.052-2.305,7.587-5.537,9.596Z" fill-rule="evenodd"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M16,2C8.266,2,2,8.271,2,15.997c0,7.345,5.666,13.374,12.864,13.952v.051h1.136c7.734,0,14-6.271,14-13.997S23.734,2,16,2Zm11.563,12.045c-1.778-.249-3.605-.171-5.391,.21-.352-.988-.805-1.934-1.335-2.838,1.47-.848,2.813-1.914,3.967-3.16,1.41,1.602,2.389,3.591,2.759,5.788Zm-4.416-7.34c-1.039,1.124-2.255,2.08-3.587,2.828-.914-1.161-1.966-2.212-3.145-3.11l-.029-.022-.03-.02s-.003-.002-.008-.006c-.006-.004-.015-.01-.025-.018-.022-.016-.049-.036-.081-.06-.039-.029-.079-.059-.121-.091-.032-.024-.066-.05-.103-.078-.08-.06-.169-.126-.25-.184-.057-.041-.138-.098-.221-.149-.016-.011-.033-.023-.053-.036-.108-.075-.27-.187-.418-.278-.138-.097-.324-.207-.446-.278-.118-.069-.246-.142-.325-.187-.026-.015-.046-.027-.06-.034-.015-.009-.028-.016-.033-.019h0c-.01-.006-.021-.012-.031-.017-.003-.002-.007-.004-.01-.006-.018-.01-.035-.019-.054-.03-.021-.012-.038-.021-.05-.029l-.009-.006-.03-.018c-.11-.067-.224-.128-.286-.161-.008-.004-.015-.008-.021-.012l-.026-.014-.027-.013c-.053-.025-.132-.063-.221-.105,.822-.183,1.676-.282,2.554-.282,2.691,0,5.168,.909,7.147,2.434Zm-12.826-.967s.007,.002,.011,.004c.193,.061,.377,.119,.554,.182,.065,.025,.129,.049,.192,.073,.288,.109,.544,.206,.759,.306l.061,.031,.015,.007c.135,.063,.33,.156,.506,.24,.093,.045,.181,.086,.252,.12,0,0,.002,0,.003,.001,.059,.032,.109,.058,.155,.086,.038,.024,.071,.044,.089,.055,.033,.019,.067,.038,.095,.054,.024,.013,.047,.026,.065,.036,.003,.002,.006,.003,.009,.005,.009,.005,.015,.008,.019,.01h.002c.026,.016,.058,.034,.094,.055,.077,.044,.175,.1,.282,.162,.076,.044,.146,.086,.204,.122,.044,.027,.067,.043,.076,.048,.005,.003,.005,.003,.002,0l.051,.039,.055,.033c.084,.05,.168,.108,.272,.18,.047,.033,.099,.069,.157,.108l.039,.027,.034,.019s0,0,0,0c0,0,.022,.014,.074,.051,.059,.042,.129,.095,.207,.153,.029,.022,.06,.045,.092,.07,.047,.036,.096,.072,.137,.103,.054,.04,.12,.09,.18,.131,.87,.665,1.661,1.429,2.369,2.266-.752,.275-1.527,.49-2.316,.632h0c-1.726,.311-3.489,.32-5.199,.006h-.003s-.003-.001-.003-.001c-1.356-.241-2.671-.679-3.9-1.293,1.058-1.716,2.545-3.139,4.312-4.119ZM4.271,15.997c0-1.443,.262-2.824,.739-4.102,1.42,.707,2.936,1.211,4.497,1.489,1.989,.365,4.027,.353,6.01-.005h0c1.125-.203,2.222-.53,3.276-.961,.472,.784,.872,1.608,1.187,2.467-4.716,1.701-8.834,5.525-10.49,10.865-3.146-2.104-5.22-5.688-5.22-9.753Zm11.729,11.727c-1.578,0-3.083-.314-4.458-.88,1.333-4.797,4.937-8.236,9.068-9.774,.713,3.458,.196,7.16-1.521,10.246-.877,.239-1.794,.381-2.741,.408h-.348Zm6.183-1.757c1.089-3.039,1.298-6.372,.617-9.52,1.642-.332,3.314-.367,4.92-.076-.125,4.052-2.305,7.587-5.537,9.596Z" fill-rule="evenodd"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M18.42,14.009L27.891,3h-2.244l-8.224,9.559L10.855,3H3.28l9.932,14.455L3.28,29h2.244l8.684-10.095,6.936,10.095h7.576l-10.301-14.991h0Zm-3.074,3.573l-1.006-1.439L6.333,4.69h3.447l6.462,9.243,1.006,1.439,8.4,12.015h-3.447l-6.854-9.804h0Z"></path></svg></span> </span> </a></li>
+                                        <li data-index="5" class=" pe--list--item pe--hover--trigger
+pe--styled--object text--anim--inner"> <a data-cursor="true" data-cursor-type="default" data-cursor-text="" data-cursor-icon="" target="_blank" href="https://www.behance.net/pethemes" rel="noopener noreferrer"> <span  data-icon-hover="slide-up" class="pe--icon--hover"> <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10.144,7.203c.808,0,1.554,.062,2.238,.249,.684,.124,1.243,.373,1.741,.684s.87,.746,1.119,1.306c.249,.56,.373,1.243,.373,1.989,0,.87-.187,1.616-.622,2.176-.373,.56-.995,1.057-1.741,1.43,1.057,.311,1.865,.87,2.362,1.616s.808,1.679,.808,2.735c0,.87-.187,1.616-.497,2.238s-.808,1.181-1.368,1.554c-.56,.373-1.243,.684-1.989,.87-.746,.187-1.492,.311-2.238,.311H2V7.203H10.144Zm-.497,6.963c.684,0,1.243-.187,1.679-.497s.622-.87,.622-1.554c0-.373-.062-.746-.187-.995s-.311-.435-.56-.622c-.249-.124-.497-.249-.808-.311s-.622-.062-.995-.062h-3.606v4.041h3.854Zm.187,7.336c.373,0,.746-.062,1.057-.124s.622-.187,.87-.373c.249-.187,.435-.373,.622-.684,.124-.311,.249-.684,.249-1.119,0-.87-.249-1.492-.746-1.927-.497-.373-1.181-.56-1.989-.56H5.792v4.787h4.041Zm11.998-.062c.497,.497,1.243,.746,2.238,.746,.684,0,1.306-.187,1.803-.497,.497-.373,.808-.746,.933-1.119h3.046c-.497,1.492-1.243,2.549-2.238,3.233-.995,.622-2.176,.995-3.606,.995-.995,0-1.865-.187-2.673-.497s-1.43-.746-1.989-1.368c-.56-.56-.995-1.243-1.243-2.052-.311-.808-.435-1.679-.435-2.673,0-.933,.124-1.803,.435-2.611s.746-1.492,1.306-2.114c.56-.56,1.243-1.057,1.989-1.368,.808-.311,1.616-.497,2.611-.497,1.057,0,1.989,.187,2.798,.622s1.43,.933,1.927,1.679c.497,.684,.87,1.492,1.119,2.362,.124,.87,.187,1.741,.124,2.735h-9.014c0,.995,.373,1.927,.87,2.425Zm3.917-6.528c-.435-.435-1.119-.684-1.927-.684-.56,0-.995,.124-1.368,.311-.373,.187-.622,.435-.87,.684-.249,.249-.373,.56-.435,.87s-.124,.56-.124,.808h5.595c-.124-.933-.435-1.554-.87-1.989Zm-5.471-6.528h6.963v1.679h-6.963v-1.679Z"></path></svg></span><span class="icon--hover--wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10.144,7.203c.808,0,1.554,.062,2.238,.249,.684,.124,1.243,.373,1.741,.684s.87,.746,1.119,1.306c.249,.56,.373,1.243,.373,1.989,0,.87-.187,1.616-.622,2.176-.373,.56-.995,1.057-1.741,1.43,1.057,.311,1.865,.87,2.362,1.616s.808,1.679,.808,2.735c0,.87-.187,1.616-.497,2.238s-.808,1.181-1.368,1.554c-.56,.373-1.243,.684-1.989,.87-.746,.187-1.492,.311-2.238,.311H2V7.203H10.144Zm-.497,6.963c.684,0,1.243-.187,1.679-.497s.622-.87,.622-1.554c0-.373-.062-.746-.187-.995s-.311-.435-.56-.622c-.249-.124-.497-.249-.808-.311s-.622-.062-.995-.062h-3.606v4.041h3.854Zm.187,7.336c.373,0,.746-.062,1.057-.124s.622-.187,.87-.373c.249-.187,.435-.373,.622-.684,.124-.311,.249-.684,.249-1.119,0-.87-.249-1.492-.746-1.927-.497-.373-1.181-.56-1.989-.56H5.792v4.787h4.041Zm11.998-.062c.497,.497,1.243,.746,2.238,.746,.684,0,1.306-.187,1.803-.497,.497-.373,.808-.746,.933-1.119h3.046c-.497,1.492-1.243,2.549-2.238,3.233-.995,.622-2.176,.995-3.606,.995-.995,0-1.865-.187-2.673-.497s-1.43-.746-1.989-1.368c-.56-.56-.995-1.243-1.243-2.052-.311-.808-.435-1.679-.435-2.673,0-.933,.124-1.803,.435-2.611s.746-1.492,1.306-2.114c.56-.56,1.243-1.057,1.989-1.368,.808-.311,1.616-.497,2.611-.497,1.057,0,1.989,.187,2.798,.622s1.43,.933,1.927,1.679c.497,.684,.87,1.492,1.119,2.362,.124,.87,.187,1.741,.124,2.735h-9.014c0,.995,.373,1.927,.87,2.425Zm3.917-6.528c-.435-.435-1.119-.684-1.927-.684-.56,0-.995,.124-1.368,.311-.373,.187-.622,.435-.87,.684-.249,.249-.373,.56-.435,.87s-.124,.56-.124,.808h5.595c-.124-.933-.435-1.554-.87-1.989Zm-5.471-6.528h6.963v1.679h-6.963v-1.679Z"></path></svg></span> </span> </a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="elementor-element elementor-element-13d1c1a7 e-con-full e-flex no e-con e-child" data-id="13d1c1a7" data-element_type="container" data-e-type="container">
+                    <div class="elementor-element elementor-element-1e930657 no elementor-widget elementor-widget-pesitelogo" data-id="1e930657" data-element_type="widget" data-e-type="widget" data-widget_type="pesitelogo.default">
+                        <div class="elementor-widget-container">
+                            <div class="site-branding pe--styled--object align-left">
+                                <div class="site-logo"><a href="./"><img width="344" height="244" src="./wp-content/uploads/sites/37/2026/02/zeyna_symbol_black.svg" class="main__logo" fetchpriority="high" alt="" decoding="async" /><img width="344" height="244" src="./wp-content/uploads/sites/37/2026/02/zeyna_symbol_white.svg" class="secondary__logo" alt="" decoding="async" /> </a></div>
+                                <div class="sticky-logo"><a href="./"> </a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="elementor-element elementor-element-47642437 text--align--left text-stroke-no elementor-widget elementor-widget-petextwrapper" data-id="47642437" data-element_type="widget" data-e-type="widget" data-widget_type="petextwrapper.default">
+                        <div class="elementor-widget-container">
+                            <div class="text-wrapper pe--styled--object">
+                                <p class="no-margin  use--sec--color ">©2026 - saifradman</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    </div>
+    <!-- speculationrules removed for standalone mode -->
+    <div class="pe-supply-badge-wrap">
+        <div class="pe-supply-discount-badge"> <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"> <path
+d="M820.62-393.85 566.15-139.38q-9.8 9.69-22.05 14.53-12.25 4.85-24.37 4.85-12.11 0-24.23-4.85-12.12-4.84-21.81-14.53L139.15-473.15q-9.46-8.7-14.3-20.72-4.85-12.02-4.85-25.28v-255.47q0-26.97 18.88-46.17Q157.77-840 185.38-840h255.47q12.97 0 25.14 5.25t21.09 14.13l333.54 333.77q9.99 9.81 14.57 22.06 4.58 12.25 4.58 24.65 0 12.4-4.58 24.39-4.58 11.98-14.57 21.9Zm-283 226.16 254.46-254.46q7.69-7.7 7.69-18.08 0-10.39-7.69-18.08L450.62-799.23H185.38q-10.76 0-18.07 6.92-7.31 6.93-7.31 17.69v255.24q0 4.61 1.54 9.23 1.54 4.61 5.38 8.46l334.54 334q7.69 7.69 18.08 7.69 10.38 0 18.08-7.69Zm-275.63-490q16.86 0 28.59-11.67t11.73-28.33q0-16.99-11.67-28.88t-28.33-11.89q-16.99 0-28.88 11.8t-11.89 28.65q0 16.86 11.8 28.59t28.65 11.73Zm219.55 179.23Z" /> </svg>
+            <p
+                class="no-margin mono">SALE!</p>
+        </div>
+    </div>
+    <div class="pe-supply-pop">
+        <div class="pe-supply-pop-close" role="button" tabindex="0" aria-label="Close offer"> <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"> <path
+d="M256-227.69 227.69-256l224-224-224-224L256-732.31l224 224 224-224L732.31-704l-224 224 224 224L704-227.69l-224-224-224 224Z" /> </svg></div>
+        <div class="bundle-card-small-top bevel-bg" style="--size:10px;"><svg class="bevel-dashed-border " width="100%" height="100%" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172.5625 223.578125"> <path d="M20.5 8.5 H152.0625 L164.0625 20.5 V203.078125 L152.0625 215.078125 H20.5 L8.5 203.078125 V20.5 Z"
+stroke="#afafaf" stroke-width="1" stroke-dasharray="4.972596435670775 4.972596435670775"
+class="bdb-path"></path> </svg>
+            <p class="mono text-silver">SPECIAL OFFER!</p>
+            <div class="bundle-card-small-lead">
+                <p>Get Zeyna for <br><span class="thm-price">$89</span> <span class="text-orange sale-price">69$</span></p>
+            </div>
+            <p class="mono text-silver"><span class="text-orange">SAVE 25%</span></p>
+        </div>
+        <div class="primary-button orange bevel-bg" style="--size:10px;"><a class="primary-button-link" target="_blank" rel="noopener noreferrer" href="https://pe.supply/themes/zeyna?utm_source=theme-demo&amp;utm_medium=sale-popup&amp;utm_campaign=theme-upsell&amp;utm_content=zeyna"><svg class="bevel-dashed-border " width="100%"
+height="100%" preserveAspectRatio="none" fill="none" aria-hidden="true" focusable="false"
+xmlns="http://www.w3.org/2000/svg" viewBox="0 0 172.5625 51.59375"> <path d="M17.5 5.5 H155.0625 L167.0625 17.5 V34.09375 L155.0625 46.09375 H17.5 L5.5 34.09375 V17.5 Z"
+stroke="#ffb473" stroke-width="1" stroke-dasharray="4.949930934130375 4.949930934130375"
+class="bdb-path is-animated"
+style="--bdb-cycle: -9.89986186826075px; --bdb-duration: 1.97997237365215s;"></path> </svg>222</a></div>
+    </div>
+    <script type="text/javascript">
+        window.elementorFrontendConfig = {
+            environmentMode: { edit: false, wpPreview: false, isScriptDebug: false },
+            i18n: { shareOnFacebook: "Share on Facebook", shareOnTwitter: "Share on Twitter", pinIt: "Pin it", download: "Download", downloadImage: "Download image", fullscreen: "Fullscreen", zoom: "Zoom", share: "Share", playVideo: "Play Video", previous: "Previous", next: "Next", close: "Close" },
+            is_rtl: false,
+            breakpoints: { xs: 0, sm: 480, md: 768, lg: 1025, xl: 1440, xxl: 1600 },
+            responsive: {
+                breakpoints: {
+                    mobile: { label: "Mobile Portrait", value: 767, default_value: 767, direction: "max", is_enabled: true },
+                    mobile_extra: { label: "Mobile Landscape", value: 880, default_value: 880, direction: "max", is_enabled: false },
+                    tablet: { label: "Tablet Portrait", value: 1024, default_value: 1024, direction: "max", is_enabled: true },
+                    tablet_extra: { label: "Tablet Landscape", value: 1200, default_value: 1200, direction: "max", is_enabled: false },
+                    laptop: { label: "Laptop", value: 1366, default_value: 1366, direction: "max", is_enabled: false },
+                    widescreen: { label: "Widescreen", value: 2400, default_value: 2400, direction: "min", is_enabled: false }
+                },
+                hasCustomBreakpoints: false
+            },
+            version: "3.24.0",
+            is_static: false,
+            experimentalFeatures: { e_optimized_control_loading: true },
+            urls: { assets: "./wp-content/plugins/elementor/assets/" },
+            nonces: { floatingButtonsClickTracking: "" },
+            swiperClass: "swiper",
+            settings: { page: [], editorPreferences: [] },
+            kit: {
+                active_breakpoints: ["viewport_mobile", "viewport_tablet"],
+                global_image_lightbox: "yes",
+                lightbox_enable_counter: "yes",
+                lightbox_enable_fullscreen: "yes",
+                lightbox_enable_zoom: "yes",
+                lightbox_enable_share: "yes",
+                lightbox_title_src: "title",
+                lightbox_description_src: "description"
+            },
+            post: { id: 16780, title: "WEBGL%20Grid", excerpt: "", featuredImage: false }
+        };
+        window.elementorAppConfig = {
+            "import-export-customization": {
+                exportGroups: {}
+            }
+        };
+    </script>
+    <script type="text/javascript" defer src="./wp-content/cache/breeze-minification/37/js/breeze_zeyna-pethemes-com-webgl-grid-37-16780.js"></script>
+    <script type="text/javascript">
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                var canvas = document.querySelector('canvas.content__canvas');
+                if (!canvas && window.jQuery && window.elementorFrontend && elementorFrontend.elementsHandler) {
+                    console.log('Explicitly triggering Elementor peshowcasewebglgrid ready...');
+                    var $grid = jQuery('.elementor-widget-peshowcasewebglgrid');
+                    if ($grid.length) {
+                        elementorFrontend.elementsHandler.runReadyTrigger($grid[0]);
+                    }
+                }
+            }, 600);
+        });
+    </script>
+    <script id="webgl-arrow-counter-script">
+    (function initWebglArrowCounter() {
+        var totalCards = 12;
+        var currentIdx = 1;
+        var format = '01 / 24';
+        var colsDesktop = 4;
+        var colsTablet = 6;
+        var colsMobile = 2;
+        var rawStep = 'cols';
+
+        function getColsCount() {
+            var w = window.innerWidth || document.documentElement.clientWidth || 1200;
+            if (w < 768) return colsMobile;
+            if (w <= 1024) return colsTablet;
+            return colsDesktop;
+        }
+
+        function getStepCount() {
+            if (rawStep === 'cols') return getColsCount();
+            var n = Number(rawStep);
+            return (n && !isNaN(n)) ? n : 1;
+        }
+
+        var counterEl = document.getElementById('webgl-arrow-counter');
+        var currEl = document.getElementById('webgl-count-curr');
+        var totalEl = document.getElementById('webgl-count-total');
+
+        function pad(n) { return n < 10 ? '0' + n : String(n); }
+
+        function updateDisplay() {
+            if (!counterEl) return;
+            if (format === '1 / 24') {
+                if (currEl) currEl.textContent = currentIdx;
+                if (totalEl) totalEl.textContent = totalCards;
+            } else if (format === 'detailed') {
+                counterEl.innerHTML = '<span class="grid--count--current">CARD ' + pad(currentIdx) + ' OF ' + pad(totalCards) + '</span>';
+            } else if (format === 'index-only') {
+                counterEl.innerHTML = '<span class="grid--count--current">' + pad(currentIdx) + '</span>';
+            } else {
+                if (currEl) currEl.textContent = pad(currentIdx);
+                if (totalEl) totalEl.textContent = pad(totalCards);
+            }
+        }
+
+        var nextBtn = document.querySelector('.pe--webgl--grid--controls .grid--item--next');
+        var prevBtn = document.querySelector('.pe--webgl--grid--controls .grid--item--prev');
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                var step = getStepCount();
+                currentIdx = ((currentIdx - 1 + step) % totalCards) + 1;
+                updateDisplay();
+            });
+        }
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() {
+                var step = getStepCount();
+                currentIdx = ((currentIdx - 1 - step + totalCards * 100) % totalCards) + 1;
+                updateDisplay();
+            });
+        }
+
+        var upBtn = document.querySelector('.pe--webgl--grid--controls .grid--item--up');
+        var downBtn = document.querySelector('.pe--webgl--grid--controls .grid--item--down');
+        if (upBtn) {
+            upBtn.addEventListener('click', function() {
+                var cols = getColsCount();
+                currentIdx = ((currentIdx - 1 - cols + totalCards * 100) % totalCards) + 1;
+                updateDisplay();
+                if (prevBtn) {
+                    for (var i = 0; i < cols; i++) prevBtn.click();
+                }
+            });
+        }
+        if (downBtn) {
+            downBtn.addEventListener('click', function() {
+                var cols = getColsCount();
+                currentIdx = ((currentIdx - 1 + cols) % totalCards) + 1;
+                updateDisplay();
+                if (nextBtn) {
+                    for (var i = 0; i < cols; i++) nextBtn.click();
+                }
+            });
+        }
+
+        document.addEventListener('click', function(e) {
+            var card = e.target.closest('.pe--webgl--project');
+            if (card && card.parentElement) {
+                var cards = Array.from(card.parentElement.querySelectorAll('.pe--webgl--project'));
+                var idx = cards.indexOf(card);
+                if (idx >= 0) {
+                    currentIdx = (idx % totalCards) + 1;
+                    updateDisplay();
+                }
+            }
+        });
+    })();
+    </script>
+</body>
+
+</html>
