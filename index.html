@@ -955,9 +955,12 @@
         isCloudOnline = true;
         updateCloudStatusBadge('connected');
         
-        if (remoteData) {
-          // Merge remote data with local defaults
-          state.records = Object.assign({}, DEFAULT_RECORDS, state.records, remoteData);
+        if (remoteData && typeof remoteData === 'object') {
+          const merged = Object.assign({}, DEFAULT_RECORDS);
+          Object.keys(remoteData).forEach(wKey => {
+            merged[wKey] = Object.assign({}, merged[wKey] || {}, remoteData[wKey] || {});
+          });
+          state.records = merged;
           safeSet(STORAGE_KEY, state);
           render();
         } else {
@@ -1250,12 +1253,21 @@
     }
 
     function getWeekRecord(weekKey) {
-      if (!state.records[weekKey]) {
+      if (!state.records[weekKey] || typeof state.records[weekKey] !== 'object') {
         state.records[weekKey] = {};
-        ROOMMATES.forEach(p => {
-          state.records[weekKey][p] = { done: false, time: '', grace: false };
-        });
       }
+      ROOMMATES.forEach(p => {
+        const cur = state.records[weekKey][p];
+        if (!cur || typeof cur !== 'object') {
+          state.records[weekKey][p] = { done: false, time: '', grace: false };
+        } else {
+          state.records[weekKey][p] = {
+            done: Boolean(cur.done),
+            time: cur.time ? String(cur.time) : '',
+            grace: Boolean(cur.grace)
+          };
+        }
+      });
       return state.records[weekKey];
     }
 
