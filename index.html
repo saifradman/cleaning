@@ -3,78 +3,104 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Automatic 4-Week Flat Cleaning Schedule for Saif, Wesdom, Mohammed, and Saber" />
   <title>Flat Cleaning Schedule | جدول نظافة السكن</title>
   <style>
-    /* ==========================================================================
-       1. DESIGN TOKENS (CLEAN LIGHT THEME)
-       ========================================================================== */
+    /* =========================================================================
+       1. DESIGN SYSTEM & TOKENS (DARK + LIGHT THEMES)
+       ========================================================================= */
     :root {
-      --bg: #F8FAFC;
-      --surface: #FFFFFF;
-      --surface-alt: #F1F5F9;
+      --bg: #090A0F;
+      --bg-elevated: #12141C;
+      --card: #151822;
+      --card-alt: #0E1017;
+      --card-hover: #1B1F2C;
+      --border: #262B3D;
+      --border-subtle: #1D2130;
+      --text: #F8FAFC;
+      --text-secondary: #CBD5E1;
+      --muted: #8E98B0;
+      --accent: #CCFF00;
+      --accent-fg: #090A0F;
+      --accent-soft: rgba(204, 255, 0, 0.12);
+      --accent-border: rgba(204, 255, 0, 0.38);
+      --amber: #FFB800;
+      --amber-soft: rgba(255, 184, 0, 0.12);
+      --amber-border: rgba(255, 184, 0, 0.4);
+      --red: #FF3355;
+      --red-soft: rgba(255, 51, 85, 0.12);
+      --red-border: rgba(255, 51, 85, 0.4);
+      --cycle-bg: #1B1F2D;
+      --shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.45);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    html.light {
+      --bg: #F4F6FB;
+      --bg-elevated: #FFFFFF;
+      --card: #FFFFFF;
+      --card-alt: #F8FAFC;
+      --card-hover: #F1F5F9;
       --border: #E2E8F0;
-      --border-strong: #CBD5E1;
+      --border-subtle: #EDF2F7;
       --text: #0F172A;
+      --text-secondary: #334155;
       --muted: #64748B;
-      --primary: #0F172A;
-      --accent: #2563EB;
-      --accent-soft: #EFF6FF;
-      --accent-border: #BFDBFE;
-      --green: #16A34A;
-      --green-soft: #DCFCE7;
-      --green-border: #86EFAC;
+      --accent: #16A34A;
+      --accent-fg: #FFFFFF;
+      --accent-soft: #DCFCE7;
+      --accent-border: #86EFAC;
       --amber: #D97706;
       --amber-soft: #FEF3C7;
       --amber-border: #FDE68A;
       --red: #DC2626;
       --red-soft: #FEE2E2;
       --red-border: #FECACA;
-      --radius: 12px;
-      --shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+      --cycle-bg: #F1F5F9;
+      --shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06);
     }
 
-    /* ==========================================================================
-       2. BASE & LAYOUT
-       ========================================================================== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
       line-height: 1.5;
-      padding: 18px 12px 64px;
+      padding: 20px 14px 72px;
+      transition: background-color 0.2s ease, color 0.2s ease;
       -webkit-font-smoothing: antialiased;
     }
+
     .container {
-      max-width: 760px;
+      max-width: 860px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
     }
 
-    /* ==========================================================================
-       3. HEADER & CONTROLS
-       ========================================================================== */
+    /* =========================================================================
+       2. TOP BAR & NAVIGATION CONTROLS
+       ========================================================================= */
     .header {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding-bottom: 14px;
+      gap: 14px;
+      padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
     }
     .live-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       font-size: 11px;
       font-weight: 700;
       color: var(--accent);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
     .pulse-dot {
       width: 8px;
@@ -82,57 +108,103 @@
       background: var(--accent);
       border-radius: 50%;
       display: inline-block;
-      box-shadow: 0 0 6px rgba(37, 99, 235, 0.45);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.55; transform: scale(0.88); }
     }
     .title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.02em;
       margin-top: 2px;
     }
-    .sync-status {
+    .sync-note {
       font-size: 11px;
-      font-weight: 700;
       color: var(--muted);
+      font-weight: 600;
       margin-top: 2px;
     }
-    .sync-status.ok { color: var(--green); }
-    .sync-status.err { color: var(--amber); }
-
-    .btn-row { display: flex; align-items: center; gap: 8px; }
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     button {
       cursor: pointer;
       font-family: inherit;
       font-weight: 700;
-      border-radius: 8px;
-      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
       transition: all 0.15s ease;
     }
-    button:active { transform: scale(0.97); }
+    button:active:not(:disabled) { transform: scale(0.97); }
     .btn-ghost {
-      background: var(--surface);
+      background: var(--card);
       color: var(--text);
       padding: 8px 12px;
       font-size: 12px;
     }
-    .btn-ghost:hover { background: var(--surface-alt); }
+    .btn-ghost:hover { background: var(--card-hover); border-color: var(--muted); }
     .btn-primary {
-      background: var(--primary);
-      color: #FFFFFF;
-      border-color: var(--primary);
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: var(--accent);
       padding: 8px 14px;
       font-size: 12px;
     }
     .btn-primary:hover { opacity: 0.92; }
 
-    /* ==========================================================================
-       4. CALENDAR BOX & 7-DAY VISUAL DATE STRIP
-       ========================================================================== */
-    .calendar-box {
-      background: var(--surface);
+    /* =========================================================================
+       3. PERSONAL IDENTITY FILTER BAR ("WHO ARE YOU?")
+       ========================================================================= */
+    .identity-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      box-shadow: var(--shadow);
+    }
+    .identity-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .identity-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .id-pill {
+      padding: 5px 11px;
+      font-size: 12px;
+      border-radius: 999px;
+      background: var(--card-alt);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    .id-pill.active {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: var(--accent);
+    }
+
+    /* =========================================================================
+       4. CALENDAR DASHBOARD, PROGRESS BAR & 7-DAY TIMELINE STRIP
+       ========================================================================= */
+    .calendar-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -141,14 +213,15 @@
     .cal-top {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 10px;
+      gap: 12px;
     }
     .week-badge {
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 800;
       color: var(--accent);
+      letter-spacing: -0.01em;
     }
     .date-range {
       font-size: 12px;
@@ -156,8 +229,44 @@
       font-weight: 600;
       margin-top: 2px;
     }
-    .countdown-box { text-align: end; }
+    .countdown-box {
+      text-align: end;
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+    }
+    .countdown-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+    .countdown-val { font-size: 13px; font-weight: 800; color: var(--text); margin-top: 2px; font-variant-numeric: tabular-nums; }
 
+    /* Progress Bar */
+    .progress-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 7-Day Visual Strip */
     .week-strip {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -165,14 +274,15 @@
     }
     .day-cell {
       border: 1px solid var(--border);
-      background: var(--bg);
-      border-radius: 8px;
-      padding: 8px 4px;
+      background: var(--card-alt);
+      border-radius: var(--radius-sm);
+      padding: 7px 4px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      gap: 2px;
+      position: relative;
     }
     .day-cell.window-clean {
       background: var(--accent-soft);
@@ -183,40 +293,28 @@
       border-color: var(--amber-border);
     }
     .day-cell.is-today {
-      border: 2px solid var(--primary);
-      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-soft);
     }
-    .day-name {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-    }
-    .day-num {
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--text);
-    }
-    .day-month {
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--muted);
-    }
+    .day-name { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .day-num { font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.2; }
     .day-tag {
       font-size: 9px;
       font-weight: 800;
       padding: 1px 5px;
       border-radius: 4px;
-      margin-top: 1px;
+      margin-top: 2px;
+      text-transform: uppercase;
     }
-    .tag-sun { background: var(--accent); color: #FFFFFF; }
-    .tag-grace { background: var(--amber); color: #FFFFFF; }
+    .tag-sun { background: var(--accent); color: var(--accent-fg); }
+    .tag-grace { background: var(--amber); color: #000; }
+    html.light .tag-grace { color: #fff; }
     .tag-rest { color: var(--muted); }
 
     /* Daily Banner */
     .day-banner {
-      padding: 10px 14px;
-      border-radius: 8px;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
       font-size: 13px;
       font-weight: 600;
       display: flex;
@@ -226,58 +324,117 @@
       gap: 8px;
     }
     .day-sun { background: var(--accent-soft); border: 1px solid var(--accent-border); color: var(--accent); }
+    html.light .day-sun { color: #15803D; }
     .day-grace { background: var(--amber-soft); border: 1px solid var(--amber-border); color: var(--amber); }
+    html.light .day-grace { color: #B45309; }
     .day-late { background: var(--red-soft); border: 1px solid var(--red-border); color: var(--red); }
-    .day-alldone { background: var(--green-soft); border: 1px solid var(--green-border); color: var(--green); }
 
-    /* ==========================================================================
+    /* =========================================================================
        5. ROOMMATE CHORE CARDS
-       ========================================================================== */
+       ========================================================================= */
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
       gap: 14px;
     }
     .card {
-      background: var(--surface);
+      background: var(--card);
       border: 2px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 12px;
+      gap: 14px;
       box-shadow: var(--shadow);
-      transition: border-color 0.15s ease;
+      transition: transform 0.15s ease, border-color 0.2s ease;
     }
-    .card.is-done { border-color: var(--green); background: #FAFDFB; }
-    .card.is-grace { border-color: var(--amber); background: #FFFDF9; }
-    .card.is-overdue { border-color: var(--red); background: #FFFBFB; }
-    .card.is-off { background: var(--surface-alt); border-color: var(--border-strong); }
+    .card.is-me {
+      box-shadow: 0 0 0 2px var(--accent), var(--shadow);
+    }
+    .card.is-done { border-color: var(--accent); }
+    .card.is-grace { border-color: var(--amber); }
+    .card.is-overdue { border-color: var(--red); }
+    .card.is-off { background: var(--card-alt); border-color: var(--border-subtle); }
 
-    .card-head {
+    .card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .avatar-wrap { display: flex; align-items: center; gap: 10px; }
+    .task-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--card-alt);
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+      justify-content: center;
+      font-size: 22px;
     }
-    .task-icon { font-size: 26px; }
     .badge {
       font-size: 11px;
       font-weight: 800;
-      padding: 3px 8px;
+      padding: 4px 9px;
       border-radius: 6px;
       text-transform: uppercase;
+      letter-spacing: 0.02em;
     }
-    .badge-pending { background: var(--surface-alt); color: var(--muted); border: 1px solid var(--border-strong); }
-    .badge-done { background: var(--green-soft); color: var(--green); border: 1px solid var(--green-border); }
-    .badge-grace { background: var(--amber-soft); color: var(--amber); border: 1px solid var(--amber-border); }
-    .badge-overdue { background: var(--red-soft); color: var(--red); border: 1px solid var(--red-border); }
-    .badge-off { background: #E2E8F0; color: var(--primary); }
+    .badge-pending { background: var(--card-alt); color: var(--text-secondary); border: 1px solid var(--border); }
+    .badge-done { background: var(--accent); color: var(--accent-fg); }
+    .badge-grace { background: var(--amber); color: #000; }
+    html.light .badge-grace { color: #fff; }
+    .badge-overdue { background: var(--red); color: #fff; }
+    .badge-off { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent-border); }
 
-    .person-name { font-size: 20px; font-weight: 800; margin-top: 4px; }
+    .person-name { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
+    .me-tag {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      text-transform: uppercase;
+    }
     .role-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-top: 2px; }
-    .role-desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .role-desc { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    /* Sub-task Checklist Pills */
+    .subtasks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .subtask-pill {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .card.is-done .subtask-pill {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      text-decoration: line-through;
+      opacity: 0.85;
+    }
+
+    .dep-hint {
+      margin-top: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 9px;
+      border-radius: 6px;
+      background: var(--card-alt);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+    }
+    .dep-hint.ready {
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
 
     .card-actions {
       display: grid;
@@ -287,52 +444,45 @@
       border-top: 1px solid var(--border);
     }
     .btn-action-done {
-      background: var(--green);
-      color: #FFFFFF;
-      border-color: var(--green);
-      padding: 9px 8px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      padding: 10px 8px;
       font-size: 12px;
     }
     .btn-action-undo {
-      background: var(--surface-alt);
+      background: var(--card-alt);
       color: var(--text);
-      border-color: var(--border-strong);
-      padding: 9px 8px;
+      border: 1px solid var(--border);
+      padding: 10px 8px;
       font-size: 12px;
     }
     .btn-action-grace {
-      background: #FFFFFF;
+      background: transparent;
       color: var(--amber);
+      border: 1px solid var(--amber-border);
+      padding: 10px 8px;
+      font-size: 12px;
+    }
+    .btn-action-grace.active {
+      background: var(--amber-soft);
       border-color: var(--amber);
-      padding: 9px 8px;
-      font-size: 12px;
     }
-    .btn-action-grace.active { background: var(--amber-soft); }
-    .card-actions button:disabled { opacity: 0.35; cursor: not-allowed; }
-    .card-actions button:disabled:active { transform: none; }
-    .card-note {
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
+    .btn-action-grace:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      border-color: var(--border);
       color: var(--muted);
-      text-align: center;
-      font-weight: 700;
-    }
-    .preview-note {
-      font-size: 11px;
-      color: var(--amber);
-      grid-column: 1 / -1;
-      text-align: center;
     }
 
-    /* ==========================================================================
-       6. 4-WEEK ROTATION TABLE
-       ========================================================================== */
+    /* =========================================================================
+       6. 2-MONTH (8-WEEK) MASTER ROTATION TABLE
+       ========================================================================= */
     .table-box {
-      background: var(--surface);
+      background: var(--card);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
+      border-radius: var(--radius-lg);
+      padding: 18px;
       overflow-x: auto;
       box-shadow: var(--shadow);
     }
@@ -344,38 +494,68 @@
       gap: 8px;
       margin-bottom: 12px;
     }
-    .table-title { font-size: 14px; font-weight: 800; text-transform: uppercase; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td {
-      padding: 10px 8px;
-      border-bottom: 1px solid var(--border);
-      text-align: start;
-      white-space: nowrap;
-    }
+    .table-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: inherit; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; text-align: start; }
     th { color: var(--muted); font-weight: 700; font-size: 12px; }
+    tr.cycle-row td {
+      background: var(--cycle-bg);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px;
+    }
     tr.active-row { background: var(--accent-soft); font-weight: 700; }
-    tr.done-row { color: var(--muted); }
+    tr.completed-row { opacity: 0.72; }
+    td.highlight-col, th.highlight-col {
+      background: rgba(204, 255, 0, 0.06);
+      font-weight: 800;
+    }
     .off-pill { color: var(--accent); font-weight: 700; }
-    .row-tag {
+    .verif-done { color: var(--accent); font-weight: 800; }
+    .verif-pending { color: var(--muted); font-family: monospace; font-weight: 700; }
+    .active-tag {
       display: inline-block;
+      background: var(--accent);
+      color: var(--accent-fg);
       font-size: 10px;
       font-weight: 800;
       padding: 1px 6px;
       border-radius: 4px;
-      margin-inline-start: 4px;
+      margin-inline-start: 6px;
     }
-    .row-tag-done { background: var(--green-soft); color: var(--green); }
-    .row-tag-active { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent-border); }
-    .row-tag-next { background: var(--amber-soft); color: var(--amber); }
+    .next-tag {
+      display: inline-block;
+      border: 1px solid var(--amber);
+      color: var(--amber);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-inline-start: 6px;
+    }
+    .equity-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--card-alt);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .equity-box strong { color: var(--text); }
 
-    /* ==========================================================================
+    /* =========================================================================
        7. SIMULATOR BAR & QR MODAL
-       ========================================================================== */
+       ========================================================================= */
     .test-bar {
-      background: var(--surface);
-      border: 1px dashed var(--border-strong);
-      border-radius: 10px;
-      padding: 12px;
+      background: var(--card-alt);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -385,23 +565,14 @@
       color: var(--muted);
     }
     .test-btns { display: flex; flex-wrap: wrap; gap: 6px; }
-    .test-btn {
-      padding: 5px 10px;
-      font-size: 11px;
-      background: var(--surface-alt);
-      color: var(--text);
-    }
-    .test-btn.active {
-      background: var(--primary);
-      color: #FFFFFF;
-      border-color: var(--primary);
-    }
+    .test-btn { padding: 5px 10px; font-size: 11px; background: var(--card); color: var(--text); }
+    .test-btn.active { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.55);
-      backdrop-filter: blur(2px);
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(3px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -410,18 +581,17 @@
     }
     .modal-backdrop.open { display: flex; }
     .modal {
-      background: var(--surface);
+      background: var(--card);
       border: 2px solid var(--accent);
-      border-radius: 14px;
+      border-radius: var(--radius-lg);
       max-width: 360px;
       width: 100%;
       padding: 22px;
       text-align: center;
-      box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.15);
+      box-shadow: var(--shadow);
     }
     .qr-wrap {
-      background: #FFFFFF;
-      border: 1px solid var(--border);
+      background: #fff;
       padding: 14px;
       border-radius: 10px;
       display: inline-block;
@@ -441,93 +611,114 @@
           <span id="live-clock-text">LIVE CALENDAR SYNC</span>
         </div>
         <h1 class="title" id="app-title">FLAT CLEANING SCHEDULE</h1>
-        <div class="sync-status" id="sync-status" aria-live="polite"></div>
+        <div class="sync-note" id="sync-note">● Auto-Synced via URL & Local Storage</div>
       </div>
       <div class="btn-row">
-        <button class="btn-ghost" id="wa-btn" type="button">📲 WhatsApp</button>
-        <button class="btn-ghost" id="qr-btn" type="button">QR</button>
-        <button class="btn-primary" id="lang-btn" type="button">عربي</button>
+        <button class="btn-ghost" type="button" id="theme-btn">☀️ Light</button>
+        <button class="btn-ghost" type="button" id="wa-btn">📲 WhatsApp Sync</button>
+        <button class="btn-ghost" type="button" id="qr-btn">QR</button>
+        <button class="btn-primary" type="button" id="lang-btn">عربي</button>
       </div>
     </header>
 
-    <!-- REAL CALENDAR & 7-DAY DATE STRIP -->
+    <!-- PERSONAL VIEW FILTER ("WHO ARE YOU?") -->
+    <section class="identity-bar">
+      <span class="identity-label" id="identity-label">👤 Highlight My Schedule:</span>
+      <div class="identity-pills" id="identity-pills"></div>
+    </section>
+
+    <!-- REAL CALENDAR DASHBOARD & 7-DAY STRIP -->
     <section class="calendar-box">
       <div class="cal-top">
         <div>
-          <div class="week-badge" id="week-badge">WEEK 2 OF 4</div>
-          <div class="date-range" id="week-dates"></div>
+          <div class="week-badge" id="week-badge">WEEK 3 OF 8 (CYCLE 1)</div>
+          <div class="date-range" id="week-dates">Sun, Nov 1 – Sat, Nov 7, 2026</div>
         </div>
         <div class="countdown-box">
-          <div style="font-size: 11px; color: var(--muted);" id="next-rotate-label">Next Cycle (Sunday Nov 1):</div>
-          <div style="font-size: 13px; font-weight: 800;" id="countdown-text">--</div>
+          <div class="countdown-label" id="next-rotate-label">Next Sunday (W4 — Nov 8) Auto-Switch:</div>
+          <div class="countdown-val" id="countdown-text">--</div>
         </div>
       </div>
 
-      <!-- 7-Day Visual Date Calendar Strip -->
+      <!-- Smooth Progress Bar -->
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="progress-title">Weekly Completion Progress</span>
+          <span id="done-counter">0 / 3 Completed (0%)</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- 7-Day Visual Calendar Strip -->
       <div class="week-strip" id="week-strip"></div>
 
       <!-- Daily Status Banner -->
-      <div id="daily-banner" class="day-banner day-alldone">
-        <span id="daily-status-msg"></span>
-        <span id="done-counter" style="font-weight: 800;"></span>
+      <div id="daily-banner" class="day-banner day-sun">
+        <span id="daily-status-msg">🟢 Today is Sunday (Main Cleaning Day)</span>
       </div>
     </section>
 
     <!-- 4 ROOMMATE CARDS -->
     <section class="cards-grid" id="cards-grid"></section>
 
-    <!-- 4-WEEK ROTATION TABLE WITH REAL SUNDAY DATES -->
+    <!-- 2-MONTH (8-WEEK) MASTER ROTATION TABLE WITH VERIFICATION -->
     <section class="table-box">
       <div class="table-header">
-        <div class="table-title" id="table-title">4-Week Rotation Calendar</div>
-        <div style="font-size: 11px; color: var(--muted);" id="table-hint">Starts Sunday + 2 Active Grace Days (Mon & Tue)</div>
+        <div class="table-title" id="table-title">2-Month (8-Week) Automatic Rotation Schedule</div>
+        <div style="font-size: 11px; color: var(--muted);" id="table-hint">Automatically switches every Sunday at 12:00 AM</div>
       </div>
       <table>
         <thead>
           <tr>
             <th id="th-week">Week & Sunday Date</th>
-            <th>Saif</th>
-            <th>Wesdom</th>
-            <th>Mohammed</th>
-            <th>Saber</th>
+            <th id="th-Saif">Saif</th>
+            <th id="th-Wesdom">Wesdom</th>
+            <th id="th-Mohammed">Mohammed</th>
+            <th id="th-Saber">Saber</th>
+            <th id="th-verif">Verification</th>
           </tr>
         </thead>
         <tbody id="schedule-tbody"></tbody>
       </table>
+
+      <div class="equity-box" id="equity-box"></div>
     </section>
 
-    <!-- DAY SIMULATOR BAR -->
+    <!-- SIMULATOR BAR FOR TESTING -->
     <section class="test-bar">
-      <span id="sim-label">🧪 Preview Sunday Nov 1 & 2-Day Active Grace Window:</span>
+      <span id="sim-label">🧪 Test how the calendar changes each day & next Sunday:</span>
       <div class="test-btns" id="test-btns">
-        <button class="test-btn active" type="button" data-mode="LIVE"></button>
-        <button class="test-btn" type="button" data-mode="SUN"></button>
-        <button class="test-btn" type="button" data-mode="MON"></button>
-        <button class="test-btn" type="button" data-mode="TUE"></button>
-        <button class="test-btn" type="button" data-mode="WED"></button>
+        <button class="test-btn active" type="button" data-mode="LIVE" id="sim-LIVE"></button>
+        <button class="test-btn" type="button" data-mode="MON" id="sim-MON"></button>
+        <button class="test-btn" type="button" data-mode="TUE" id="sim-TUE"></button>
+        <button class="test-btn" type="button" data-mode="WED" id="sim-WED"></button>
+        <button class="test-btn" type="button" data-mode="W4" id="sim-W4"></button>
+        <button class="test-btn" type="button" data-mode="W5" id="sim-W5"></button>
       </div>
     </section>
 
   </div>
 
-  <!-- QR MODAL -->
-  <div class="modal-backdrop" id="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-title">
+  <!-- QR CODE MODAL -->
+  <div class="modal-backdrop" id="qr-modal" role="dialog" aria-modal="true">
     <div class="modal">
       <div style="font-size: 11px; color: var(--accent); font-weight: 800; text-transform: uppercase;">Saif • Wesdom • Mohammed • Saber</div>
       <h3 style="font-size: 18px; font-weight: 800; margin-top: 4px;" id="qr-title">SCAN FOR THIS WEEK'S CHORE</h3>
-      <p style="font-size: 12px; color: var(--muted); margin-top: 2px;" id="qr-sub">Scan to see whose turn it is this week</p>
+      <p style="font-size: 12px; color: var(--muted); margin-top: 2px;" id="qr-sub">امسح الكود لمعرفة دورك هذا الأسبوع</p>
       <div class="qr-wrap">
         <img id="qr-img" src="" alt="QR Code" width="170" height="170" style="display:block;" />
       </div>
       <div>
-        <button class="btn-primary" type="button" id="qr-close">Close</button>
+        <button class="btn-primary" type="button" id="qr-close">Close / إغلاق</button>
       </div>
     </div>
   </div>
 
   <script>
     // =========================================================================
-    // 1. SAFE LOCAL STORAGE WRAPPER (Works on GitHub Pages, Netlify & Mobile)
+    // 1. SAFE STORAGE WRAPPER
     // =========================================================================
     const memoryBackup = {};
     function safeGet(key, fallback) {
@@ -547,96 +738,176 @@
     }
 
     // =========================================================================
-    // 2. 4-WEEK ROTATION SCHEDULE (Paper rows 1-3 + Row 4 for Saber)
+    // 2. 8-WEEK (2-MONTH) ROTATION DATA & ANCHOR MATH
     // =========================================================================
     const ROTATION = [
-      { Saif: 'Bath',    Wesdom: 'Floor',   Mohammed: 'Off',     Saber: 'Kitchen' }, // Week 1 (Oct 18)
-      { Saif: 'Off',     Wesdom: 'Kitchen', Mohammed: 'Bath',    Saber: 'Floor'   }, // Week 2 (Oct 25 - FINISHED)
-      { Saif: 'Kitchen', Wesdom: 'Off',     Mohammed: 'Floor',   Saber: 'Bath'    }, // Week 3 (Nov 1  - STARTS SUNDAY)
-      { Saif: 'Floor',   Wesdom: 'Bath',    Mohammed: 'Kitchen', Saber: 'Off'     }  // Week 4 (Nov 8)
+      { Saif: 'Bath',    Wesdom: 'Floor',   Mohammed: 'Off',     Saber: 'Kitchen' }, // W1 (Oct 18) & W5 (Nov 15)
+      { Saif: 'Off',     Wesdom: 'Kitchen', Mohammed: 'Bath',    Saber: 'Floor'   }, // W2 (Oct 25) & W6 (Nov 22)
+      { Saif: 'Kitchen', Wesdom: 'Off',     Mohammed: 'Floor',   Saber: 'Bath'    }, // W3 (Nov 1)  & W7 (Nov 29)
+      { Saif: 'Floor',   Wesdom: 'Bath',    Mohammed: 'Kitchen', Saber: 'Off'     }  // W4 (Nov 8)  & W8 (Dec 6)
     ];
     const ROOMMATES = ['Saif', 'Wesdom', 'Mohammed', 'Saber'];
 
-    // Anchor Sunday = Oct 18, 2026 (Week 1) so:
-    // - Week 2 = Oct 25, 2026 (Already completed)
-    // - Week 3 = Sunday, Nov 1, 2026 (Starts this Sunday + Mon Nov 2 & Tue Nov 3 active window)
+    // Anchor W1 = Sunday, Oct 18, 2026 (UTC calendar day math prevents DST drift)
     const ANCHOR = { y: 2026, m: 9, d: 18 };
     const MS_PER_DAY = 24 * 60 * 60 * 1000;
-    const POLL_MS = 15000;
+    const ANCHOR_UTC_DAYS = Math.round(Date.UTC(ANCHOR.y, ANCHOR.m, ANCHOR.d) / MS_PER_DAY);
 
-    const PREFS_KEY = 'flat_schedule_prefs_v6';
-    const CACHE_KEY = 'flat_schedule_cache_v6';
-    const prefs = safeGet(PREFS_KEY, { lang: 'en' });
-    if (prefs.lang !== 'en' && prefs.lang !== 'ar') prefs.lang = 'en';
+    function addDaysLocal(days, hour = 0) {
+      return new Date(ANCHOR.y, ANCHOR.m, ANCHOR.d + days, hour, 0, 0);
+    }
 
-    // Default records: Week 2 (Oct 25, 2026) is pre-marked as 100% Finished
-    const defaultRecords = {
+    function toDateKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    }
+
+    // W1 (Oct 18) and W2 (Oct 25) are pre-marked Completed
+    const DEFAULT_RECORDS = {
       '2026-10-18': {
-        Saif:     { done: true,  doneAt: '2026-10-18T14:00:00.000Z', grace: false },
-        Wesdom:   { done: true,  doneAt: '2026-10-18T15:00:00.000Z', grace: false },
-        Mohammed: { done: false, doneAt: null,                       grace: false },
-        Saber:    { done: true,  doneAt: '2026-10-18T16:00:00.000Z', grace: false }
+        Saif:     { done: true,  time: 'Sun', grace: false },
+        Wesdom:   { done: true,  time: 'Sun', grace: false },
+        Mohammed: { done: false, time: '',    grace: false },
+        Saber:    { done: true,  time: 'Sun', grace: false }
       },
       '2026-10-25': {
-        Saif:     { done: false, doneAt: null,                       grace: false },
-        Wesdom:   { done: true,  doneAt: '2026-10-25T14:30:00.000Z', grace: false },
-        Mohammed: { done: true,  doneAt: '2026-10-25T16:00:00.000Z', grace: false },
-        Saber:    { done: true,  doneAt: '2026-10-25T17:15:00.000Z', grace: false }
+        Saif:     { done: false, time: '',    grace: false },
+        Wesdom:   { done: true,  time: 'Sun', grace: false },
+        Mohammed: { done: true,  time: 'Sun', grace: false },
+        Saber:    { done: true,  time: 'Sun', grace: false }
       }
     };
 
-    const savedRecords = safeGet(CACHE_KEY, {});
-    const records = Object.assign({}, defaultRecords, savedRecords);
-    safeSet(CACHE_KEY, records);
+    const STORAGE_KEY = 'flat_schedule_8weeks_v3';
+    let state = safeGet(STORAGE_KEY, {
+      lang: 'en',
+      theme: 'light',
+      me: 'ALL',
+      records: DEFAULT_RECORDS
+    });
 
-    let testMode = 'LIVE'; // 'LIVE' | 'SUN' | 'MON' | 'TUE' | 'WED'
-    let hasRemoteApi = false;
+    state.records = Object.assign({}, DEFAULT_RECORDS, state.records || {});
+    if (!state.me) state.me = 'ALL';
 
     // =========================================================================
-    // 3. BILINGUAL TEXT DICTIONARY (ENGLISH & ARABIC)
+    // 3. URL STATE SYNC (Allows sharing live checkmarks via WhatsApp link!)
+    // =========================================================================
+    function importStateFromURL() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const w = params.get('w');
+        const st = params.get('st'); // 4-char code: e.g. D=Done, G=Grace, P=Pending for each roommate
+        if (w && st && st.length === 4) {
+          if (!state.records[w]) state.records[w] = {};
+          ROOMMATES.forEach((p, idx) => {
+            const code = st[idx];
+            const prev = state.records[w][p] || { done: false, time: '', grace: false };
+            if (code === 'D') {
+              state.records[w][p] = { done: true, time: prev.time || 'Synced', grace: false };
+            } else if (code === 'G') {
+              state.records[w][p] = { done: false, time: '', grace: true };
+            } else {
+              state.records[w][p] = { done: false, time: '', grace: false };
+            }
+          });
+          safeSet(STORAGE_KEY, state);
+        }
+      } catch (e) {}
+    }
+    importStateFromURL();
+
+    function buildSyncURL(weekKey) {
+      const base = window.location.origin + window.location.pathname;
+      const recs = getWeekRecord(weekKey);
+      const code = ROOMMATES.map(p => recs[p].done ? 'D' : (recs[p].grace ? 'G' : 'P')).join('');
+      return `${base}?w=${encodeURIComponent(weekKey)}&st=${code}`;
+    }
+
+    let testMode = 'LIVE'; // 'LIVE' | 'MON' | 'TUE' | 'WED' | 'W4' | 'W5'
+
+    // =========================================================================
+    // 4. BILINGUAL DICTIONARY (EN & AR)
     // =========================================================================
     const TEXT = {
       en: {
         dir: 'ltr',
         locale: 'en-US',
         langBtn: 'عربي',
+        themeLight: '☀️ Light',
+        themeDark: '🌙 Dark',
         appTitle: 'FLAT CLEANING SCHEDULE',
-        nextRotateLabel: 'Next Sunday (Nov 1) Starts In:',
-        countdown: (d, h, m) => `in ${d}d ${h}h ${m}m`,
-        tableTitle: '4-Week Automatic Rotation Calendar',
-        tableHint: 'Starts every Sunday + 2 active grace days (Mon & Tue)',
+        syncNote: '● Smart Sync: Share via WhatsApp to update all phones',
+        idLabel: '👤 Highlight My Schedule:',
+        idAll: 'All (4)',
+        youTag: 'YOU',
+        progressTitle: 'Weekly Chore Progress',
+        nextRotateLabel: (nextW, nextDate) => `Next Sunday (W${nextW} — ${nextDate}) Auto-Switch:`,
+        tableTitle: '2-Month (8-Week) Automatic Rotation Schedule',
+        tableHint: 'Automatically switches every Sunday at 12:00 AM',
         thWeek: 'Week & Sunday Date',
-        simLabel: '🧪 Preview Sunday Nov 1 & 2-Day Active Grace Window:',
-        simButtons: {
-          LIVE: '📡 Today (W2 Done)',
-          SUN: '🟢 Sun Nov 1 (W3 Start)',
-          MON: '🟡 Mon Nov 2 (Day 1 Grace)',
-          TUE: '🟠 Tue Nov 3 (Day 2 Grace)',
-          WED: '🔴 Wed Nov 4 (Closed)'
+        thVerif: 'Verification',
+        cycle1Header: 'Cycle 1 — Month 1 (Weeks 1 to 4)',
+        cycle2Header: 'Cycle 2 — Month 2 (Weeks 5 to 8)',
+        verifCompleted: '✓ Completed',
+        verifPending: '[   ] Done',
+        activeBadge: 'ACTIVE NOW',
+        nextBadge: 'NEXT WEEK',
+        equityHTML: '<strong>Workload Equity Guarantee:</strong> Over these 8 weeks, every resident completes exactly 2 Bathroom decontaminations, 2 Kitchen duties, 2 Floor cleanings, and enjoys exactly 2 full OFF-DUTY rest weeks with zero labor obligations.',
+        simLabel: '🧪 Test how the calendar changes each day & next Sunday:',
+        simBtns: {
+          LIVE: '📡 Today (Sun 1/11 — W3)',
+          MON: 'Mon (Grace 1)',
+          TUE: 'Tue (Grace 2)',
+          WED: 'Wed–Sat (Late)',
+          W4: '⏭️ Next Sun (8/11 — W4)',
+          W5: '⏭️ Sun 15/11 (W5)'
         },
-        chill: '😎 100% Chill Week',
-        weekBadge: (w) => `WEEK ${w} OF 4`,
-        doneCounter: (d, total) => `${d} / ${total} Completed`,
-        dayTags: { sun: 'START', grace: '2D GRACE', rest: '—' },
-        rowTags: { done: 'FINISHED', active: 'CURRENT', next: 'STARTS NOV 1' },
+        weekBadge: (w, c) => `WEEK ${w} OF 8 (CYCLE ${c} — MONTH ${c})`,
+        doneCounter: (d, pct) => `${d} / 3 Completed (${pct}%)`,
+        dayTags: { sun: 'CLEAN', grace: 'GRACE', rest: '—' },
         dayMessages: {
-          0: '🟢 Sunday — Cleaning Day! Clean today or tap "Active Mon/Tue" for 2 extra days.',
-          1: '🟡 Monday — Active Day 1 of 2! Roommates have until tomorrow night to finish.',
-          2: '🟠 Tuesday — Final Active Day (Day 2 of 2)! Finish before midnight tonight.',
-          late: (dName) => `🔴 ${dName} — The Sunday + 2-Day Grace Window has closed!`,
-          allDone: '✅ Week 2 is 100% Finished! Next rotation starts automatically on Sunday, Nov 1.'
+          0: '🟢 Today is Sunday — Main Cleaning Day! Clean today or tap "Busy (Mon/Tue)" for a 48h extension.',
+          1: '🟡 Today is Monday — Grace Day 1 of 2 for busy roommates (Due Tuesday 11:59 PM).',
+          2: '🟠 Today is Tuesday — Final Grace Day! Must be finished before midnight tonight.',
+          late: (dName) => `🔴 Today is ${dName} — Sunday & Mon/Tue Grace Window has closed!`,
+          allDone: '✅ All 3 chores for this week are completed! Great job everyone.'
         },
+        depWait: (kPerson) => `🛡️ Tip: Wait until ${kPerson} finishes Kitchen so grease/crumbs don'tdirty your mopped floor.`,
+        depReady: (kPerson) => `✨ Kitchen is clean (${kPerson}) — Floor is clear for mopping!`,
         tasks: {
-          Bath:    { name: 'Bathroom', icon: '🚽', desc: 'Scrub toilet, sink, mirror & shower floor.' },
-          Floor:   { name: 'Floor',    icon: '🧹', desc: 'Sweep and mop living room & hallway.' },
-          Kitchen: { name: 'Kitchen',  icon: '🍳', desc: 'Stove, sink, counters & take out trash.' },
-          Off:     { name: 'OFF-DUTY', icon: '👑', desc: 'Official rest week. Zero chores required!' }
+          Bath: {
+            name: 'Bathroom',
+            short: 'Bathroom',
+            icon: '🚽',
+            desc: 'Full bathroom disinfection & shine.',
+            checks: ['Toilet Bowl', 'Sink & Mirror', 'Shower Floor', 'Empty Bin']
+          },
+          Floor: {
+            name: 'Floor',
+            short: 'Floor',
+            icon: '🧹',
+            desc: 'Sweep & mop shared living spaces.',
+            checks: ['Sweep Hallway', 'Sweep Living Room', 'Mop with Disinfectant', 'Shake Rugs']
+          },
+          Kitchen: {
+            name: 'Kitchen',
+            short: 'Kitchen',
+            icon: '🍳',
+            desc: 'Degrease surfaces, sink & take out trash.',
+            checks: ['Stove & Counters', 'Scrub Sink', 'Wipe Appliances', 'Take Out Trash']
+          },
+          Off: {
+            name: 'OFF-DUTY',
+            short: 'OFF-DUTY',
+            icon: '👑',
+            desc: 'Official rest week. Zero chores required!',
+            checks: []
+          }
         },
         badges: {
           done: (t) => t ? `✓ DONE (${t})` : '✓ COMPLETED',
-          grace: '⏳ ACTIVE (MON/TUE)',
+          grace: '⏳ DUE TUE 11:59 PM',
           pendingSun: 'DUE TODAY',
-          lateNoGrace: '⚠️ LATE (UNANNOUNCED)',
+          lateNoGrace: '⚠️ LATE (NO GRACE)',
           overdue: '🚨 OVERDUE',
           off: '👑 REST WEEK'
         },
@@ -644,56 +915,88 @@
           done: '✓ Mark Done',
           undo: '↩️ Undo',
           grace: '⏳ Busy (Mon/Tue)',
-          graceOn: '⏳ 2-Day Active'
-        },
-        sync: {
-          ready: '● Week 2 Finished • Next Cycle Starts Sunday, Nov 1 (Active for 2 Grace Days)',
-          cloud: '● Live Synced with All Roommates'
-        },
-        qrTitle: "SCAN FOR THIS WEEK'S CHORE",
-        qrSub: 'Scan to check your turn and mark Done',
-        qrClose: 'Close',
-        waLink: 'Open Schedule:'
+          graceOn: '⏳ Grace Active',
+          graceClosed: '🔒 Window Closed'
+        }
       },
       ar: {
         dir: 'rtl',
         locale: 'ar-EG',
         langBtn: 'English',
+        themeLight: '☀️ فاتح',
+        themeDark: '🌙 داكن',
         appTitle: 'جدول نظافة السكن',
-        nextRotateLabel: 'يبدأ الدور القادم (الأحد 1 نوفمبر) بعد:',
-        countdown: (d, h, m) => `بعد ${d} يوم و ${h} ساعة و ${m} دقيقة`,
-        tableTitle: 'جدول المناوبة التلقائي بالتواريخ (4 أسابيع)',
-        tableHint: 'يبدأ كل أحد + يومين متاحين للتنظيف (الإثنين والثلاثاء)',
+        syncNote: '● مزامنة ذكية: شارك عبر واتساب لتحديث الحالة عند الجميع',
+        idLabel: '👤 حدد اسمك لتمييز جدولك:',
+        idAll: 'الكل (4)',
+        youTag: 'أنت',
+        progressTitle: 'نسبة إنجاز مهام الأسبوع',
+        nextRotateLabel: (nextW, nextDate) => `التبديل التلقائي القادم (الأسبوع ${nextW} — ${nextDate}):`,
+        tableTitle: 'جدول المناوبة التلقائي لمدة شهرين (8 أسابيع)',
+        tableHint: 'يتغير الجدول تلقائياً كل يوم أحد الساعة 12:00 صباحاً',
         thWeek: 'الأسبوع وتاريخ الأحد',
-        simLabel: '🧪 معاينة يوم الأحد 1 نوفمبر ويومي المهلة:',
-        simButtons: {
-          LIVE: '📡 اليوم (الأسبوع 2 مكتمل)',
-          SUN: '🟢 الأحد 1 نوفمبر (بدء ع3)',
-          MON: '🟡 الإثنين 2 نوفمبر (مهلة 1)',
-          TUE: '🟠 الثلاثاء 3 نوفمبر (مهلة 2)',
-          WED: '🔴 الأربعاء 4 نوفمبر (مغلق)'
+        thVerif: 'حالة الإنجاز',
+        cycle1Header: 'الدورة 1 — الشهر الأول (الأسابيع 1 إلى 4)',
+        cycle2Header: 'الدورة 2 — الشهر الثاني (الأسابيع 5 إلى 8)',
+        verifCompleted: '✓ مكتمل',
+        verifPending: '[   ] تم',
+        activeBadge: 'الحالي الآن',
+        nextBadge: 'الأسبوع القادم',
+        equityHTML: '<strong>ضمان عدالة توزيع المهام:</strong> خلال هذه الـ 8 أسابيع، ينجز كل شخص بالضبط مرتين حمام، ومرتين مطبخ، ومرتين أرضية، ويحصل على أسبوعين راحة كاملة (OFF-DUTY) بدون أي مهام.',
+        simLabel: '🧪 جرب كيف يتغير النظام تلقائياً كل يوم وفي الأحد القادم:',
+        simBtns: {
+          LIVE: '📡 اليوم (الأحد 1/11 — أسبوع 3)',
+          MON: 'الإثنين (مهلة 1)',
+          TUE: 'الثلاثاء (مهلة 2)',
+          WED: 'الأربعاء–السبت (متأخر)',
+          W4: '⏭️ الأحد القادم (8/11 — أسبوع 4)',
+          W5: '⏭️ الأحد 15/11 (أسبوع 5)'
         },
-        chill: '😎 أسبوع راحة كامل',
-        weekBadge: (w) => `الأسبوع ${w} من 4`,
-        doneCounter: (d, total) => `${d} / ${total} مكتمل`,
-        dayTags: { sun: 'البدء', grace: 'مهلة يومين', rest: '—' },
-        rowTags: { done: 'مكتمل', active: 'الحالي', next: 'يبدأ 1 نوفمبر' },
+        weekBadge: (w, c) => `الأسبوع ${w} من 8 (الدورة ${c} — الشهر ${c})`,
+        doneCounter: (d, pct) => `${d} / 3 مكتمل (${pct}%)`,
+        dayTags: { sun: 'تنظيف', grace: 'مهلة', rest: '—' },
         dayMessages: {
-          0: '🟢 الأحد — يوم التنظيف! نظف اليوم أو اضغط "مشغول (إثنين/ثلاثاء)" لتفعيل يومين إضافيين.',
-          1: '🟡 الإثنين — اليوم الأول من المهلة المتاحة (مستمر حتى مساء الغد الثلاثاء).',
-          2: '🟠 الثلاثاء — اليوم الثاني والأخير في المهلة! يجب الانتهاء قبل منتصف الليل.',
-          late: (dName) => `🔴 ${dName} — انتهى وقت التنظيف ومهلة اليومين!`,
-          allDone: '✅ تم الانتهاء من الأسبوع 2 بالكامل! يبدأ الدور القادم تلقائياً يوم الأحد 1 نوفمبر.'
+          0: '🟢 اليوم الأحد — يوم التنظيف الأساسي! نظف اليوم أو اضغط "مشغول (إثنين/ثلاثاء)" لمهلة 48 ساعة.',
+          1: '🟡 اليوم الإثنين — اليوم الأول من مهلة المشغولين (تنتهي غداً الثلاثاء 11:59 ليلاً).',
+          2: '🟠 اليوم الثلاثاء — آخر يوم في المهلة! يجب إنهاء التنظيف قبل منتصف الليل.',
+          late: (dName) => `🔴 اليوم ${dName} — انتهى وقت التنظيف ومهلة الإثنين/الثلاثاء!`,
+          allDone: '✅ تم إنجاز جميع المهام الثلاث لهذا الأسبوع! الله يعطيكم العافية.'
         },
+        depWait: (kPerson) => `🛡️ نصيحة: انتظر حتى ينتهي ${kPerson} من المطبخ لكي لا تتسخ الأرضية بعد مسحها.`,
+        depReady: (kPerson) => `✨ المطبخ نظيف (${kPerson}) — يمكنك مسح الأرضية الآن بسلام!`,
         tasks: {
-          Bath:    { name: 'الحمام',     icon: '🚽', desc: 'تنظيف الحمام والمغسلة والمرآة والأرضية.' },
-          Floor:   { name: 'الأرضية',    icon: '🧹', desc: 'كنس ومسح الصالة والممر.' },
-          Kitchen: { name: 'المطبخ',     icon: '🍳', desc: 'الغاز، المجلى، الأسطح وإخراج القمامة.' },
-          Off:     { name: 'راحة (OFF)', icon: '👑', desc: 'أسبوع إجازتك الرسمي.. استرح وراقب الوضع!' }
+          Bath: {
+            name: 'Bathroom (الحمام)',
+            short: 'الحمام',
+            icon: '🚽',
+            desc: 'تنظيف وتعقيم الحمام بالكامل.',
+            checks: ['المرحاض', 'المغسلة والمرآة', 'أرضية الشاور', 'إفراغ السلة']
+          },
+          Floor: {
+            name: 'Floor (الأرضية)',
+            short: 'الأرضية',
+            icon: '🧹',
+            desc: 'كنس ومسح الصالة والممر.',
+            checks: ['كنس الممر', 'كنس الصالة', 'مسح بمعقم', 'نفض الفرش']
+          },
+          Kitchen: {
+            name: 'Kitchen (المطبخ)',
+            short: 'المطبخ',
+            icon: '🍳',
+            desc: 'الغاز، المجلى، الأسطح وإخراج القمامة.',
+            checks: ['الغاز والأسطح', 'غسيل المجلى', 'مسح الأجهزة', 'إخراج القمامة']
+          },
+          Off: {
+            name: 'OFF-DUTY (راحة)',
+            short: 'OFF-DUTY',
+            icon: '👑',
+            desc: 'أسبوع إجازتك الرسمي.. استرح وراقب الوضع!',
+            checks: []
+          }
         },
         badges: {
           done: (t) => t ? `✓ تم (${t})` : '✓ مكتمل',
-          grace: '⏳ متاح (إثنين/ثلاثاء)',
+          grace: '⏳ مهلة للثلاثاء ليلاً',
           pendingSun: 'مطلوب اليوم',
           lateNoGrace: '⚠️ متأخر بدون استئذان',
           overdue: '🚨 متأخر جداً',
@@ -703,194 +1006,221 @@
           done: '✓ تم التنفيذ',
           undo: '↩️ تراجع',
           grace: '⏳ مشغول (إثنين/ثلاثاء)',
-          graceOn: '⏳ مهلة يومين مفعلة'
-        },
-        sync: {
-          ready: '● الأسبوع 2 مكتمل • يبدأ الدور القادم الأحد 1 نوفمبر (متاح ليومين إضافيين)',
-          cloud: '● متصل ومشترك مع جميع الشباب'
-        },
-        qrTitle: 'كود جدول النظافة لهذا الأسبوع',
-        qrSub: 'امسح الكود لمعرفة دورك هذا الأسبوع',
-        qrClose: 'إغلاق',
-        waLink: 'افتح الجدول:'
+          graceOn: '⏳ المهلة مفعلة',
+          graceClosed: '🔒 انتهت المهلة'
+        }
       }
     };
 
     // =========================================================================
-    // 4. REAL CALENDAR MATH (Timezone & DST Safe)
+    // 5. CALENDAR ENGINE (DST-SAFE & SEPARATED CLOCK TICKER)
     // =========================================================================
-    function dayNumber(date) {
-      return Math.round(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / MS_PER_DAY);
-    }
-    const ANCHOR_DAY = Math.round(Date.UTC(ANCHOR.y, ANCHOR.m, ANCHOR.d) / MS_PER_DAY);
-
-    function anchorPlusDays(days, hour = 0) {
-      return new Date(ANCHOR.y, ANCHOR.m, ANCHOR.d + days, hour, 0, 0);
-    }
-
-    function weeksSinceAnchor(date) {
-      return Math.floor((dayNumber(date) - ANCHOR_DAY) / 7);
-    }
-
-    function toWeekKey(date) {
-      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    }
-
     function getEffectiveNow() {
       const now = new Date();
       if (testMode === 'LIVE') return now;
-      // Preview Week 3 starting Sunday Nov 1, 2026 (14 days after Oct 18 anchor)
-      const offsets = { SUN: 14, MON: 15, TUE: 16, WED: 17 };
-      return anchorPlusDays(offsets[testMode], 14);
+      // Relative to W3 (Sunday Nov 1, 2026 = 14 days after Oct 18, 2026)
+      if (testMode === 'MON') return addDaysLocal(15, 14); // Mon Nov 2
+      if (testMode === 'TUE') return addDaysLocal(16, 14); // Tue Nov 3
+      if (testMode === 'WED') return addDaysLocal(17, 14); // Wed Nov 4
+      if (testMode === 'W4')  return addDaysLocal(21, 14); // Next Sun Nov 8 (W4)
+      if (testMode === 'W5')  return addDaysLocal(28, 14); // Sun Nov 15 (W5)
+      return now;
     }
 
     function getCalendarData() {
       const now = getEffectiveNow();
-      const weeksElapsed = weeksSinceAnchor(now);
-      const rotationIndex = ((weeksElapsed % 4) + 4) % 4;
-      const weekStartSunday = anchorPlusDays(weeksElapsed * 7);
-      const weekEndSaturday = anchorPlusDays(weeksElapsed * 7 + 6);
-      const nextSunday = anchorPlusDays(weeksElapsed * 7 + 7);
+      const todayUtcDays = Math.round(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / MS_PER_DAY);
+      const daysSinceAnchor = Math.max(0, todayUtcDays - ANCHOR_UTC_DAYS);
+      const weeksElapsed = Math.floor(daysSinceAnchor / 7);
+
+      const rotationIndex = weeksElapsed % 4;
+      const eightWeekIndex = weeksElapsed % 8;
+
+      const weekStartSunday = addDaysLocal(weeksElapsed * 7, 0);
+      const weekEndSaturday = addDaysLocal(weeksElapsed * 7 + 6, 0);
+      const nextSunday = addDaysLocal((weeksElapsed + 1) * 7, 0);
+      const weekKey = toDateKey(weekStartSunday);
 
       return {
         now,
         dayOfWeek: now.getDay(), // 0 Sun, 1 Mon, 2 Tue, 3..6 Wed..Sat
         weeksElapsed,
         rotationIndex,
+        eightWeekIndex,
         weekStartSunday,
         weekEndSaturday,
         nextSunday,
-        weekKey: toWeekKey(weekStartSunday)
+        weekKey
       };
     }
 
-    function getPersonRecord(weekKey, person) {
-      const week = records[weekKey] || {};
-      return week[person] || { done: false, doneAt: null, grace: false };
-    }
-
-    // =========================================================================
-    // 5. HYBRID STORAGE (Works on GitHub Pages Static + Optional Netlify API)
-    // =========================================================================
-    async function fetchRemoteWeek(weekKey) {
-      try {
-        const res = await fetch(`/api/status?week=${weekKey}`, { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data && data.records) {
-          hasRemoteApi = true;
-          // Keep pre-completed W2 if server is empty for W2
-          if (weekKey === '2026-10-25' && Object.keys(data.records).length === 0) return;
-          records[weekKey] = data.records;
-          safeSet(CACHE_KEY, records);
-          render();
-        }
-      } catch (e) {
-        // Static hosting (GitHub Pages) - silently use localStorage
-      }
-    }
-
-    async function saveStatus(person, patch) {
-      const cal = getCalendarData();
-      const weekKey = cal.weekKey;
-
-      const rec = { ...getPersonRecord(weekKey, person), ...patch };
-      if ('done' in patch) {
-        rec.doneAt = patch.done ? new Date().toISOString() : null;
-      }
-      records[weekKey] = { ...(records[weekKey] || {}), [person]: rec };
-      safeSet(CACHE_KEY, records);
-      render();
-
-      // Also sync to /api/status if hosted on Netlify with backend
-      try {
-        const res = await fetch('/api/status', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ week: weekKey, person, ...patch })
+    function getWeekRecord(weekKey) {
+      if (!state.records[weekKey]) {
+        state.records[weekKey] = {};
+        ROOMMATES.forEach(p => {
+          state.records[weekKey][p] = { done: false, time: '', grace: false };
         });
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.records) {
-            records[weekKey] = data.records;
-            safeSet(CACHE_KEY, records);
-            render();
-          }
-        }
-      } catch (e) {
-        // On GitHub Pages static hosting, localStorage already saved it!
       }
+      return state.records[weekKey];
+    }
+
+    function isWeekFullyDone(weekKey, rotIdx) {
+      const recs = state.records[weekKey];
+      if (!recs) return false;
+      const assign = ROTATION[rotIdx];
+      return ROOMMATES.every(p => assign[p] === 'Off' || (recs[p] && recs[p].done));
+    }
+
+    // Engineering Fix: Grace can only be claimed/toggled during Sun–Tue (days 0, 1, 2)
+    function isGraceWindowOpen(dayOfWeek) {
+      return dayOfWeek === 0 || dayOfWeek === 1 || dayOfWeek === 2;
     }
 
     // =========================================================================
-    // 6. UI RENDERING
+    // 6. USER ACTIONS
     // =========================================================================
-    function formatDoneTime(iso, locale) {
-      if (!iso) return '';
-      return new Date(iso).toLocaleString(locale, { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+    function toggleLang() {
+      state.lang = state.lang === 'en' ? 'ar' : 'en';
+      safeSet(STORAGE_KEY, state);
+      render();
     }
 
-    function renderClock() {
-      const t = TEXT[prefs.lang];
+    function toggleTheme() {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      safeSet(STORAGE_KEY, state);
+      render();
+    }
+
+    function setIdentity(person) {
+      state.me = person;
+      safeSet(STORAGE_KEY, state);
+      render();
+    }
+
+    function toggleDone(person) {
+      const cal = getCalendarData();
+      const t = TEXT[state.lang];
+      const rec = getWeekRecord(cal.weekKey)[person];
+      rec.done = !rec.done;
+      if (rec.done) {
+        const dayShort = cal.now.toLocaleDateString(t.locale, { weekday: 'short' });
+        const clockShort = new Date().toLocaleTimeString(t.locale, { hour: '2-digit', minute: '2-digit' });
+        rec.time = `${dayShort} ${clockShort}`;
+      } else {
+        rec.time = '';
+      }
+      safeSet(STORAGE_KEY, state);
+      render();
+    }
+
+    function toggleGrace(person) {
+      const cal = getCalendarData();
+      if (!isGraceWindowOpen(cal.dayOfWeek)) return;
+      const rec = getWeekRecord(cal.weekKey)[person];
+      if (rec.done) return;
+      rec.grace = !rec.grace;
+      safeSet(STORAGE_KEY, state);
+      render();
+    }
+
+    function setTestDay(mode) {
+      testMode = mode;
+      render();
+    }
+
+    // =========================================================================
+    // 7. SEPARATED CLOCK TICKER (Runs every 1s WITHOUT destroying DOM buttons!)
+    // =========================================================================
+    let lastRenderedDayKey = null;
+
+    function tickClockOnly() {
+      const t = TEXT[state.lang];
       const cal = getCalendarData();
       const fullDateStr = cal.now.toLocaleDateString(t.locale, {
         weekday: 'long', month: 'short', day: 'numeric', year: 'numeric'
       });
-      const timeStr = cal.now.toLocaleTimeString(t.locale, {
+      const timeStr = new Date().toLocaleTimeString(t.locale, {
         hour: '2-digit', minute: '2-digit', second: '2-digit'
       });
-      document.getElementById('live-clock-text').textContent = `${fullDateStr} • ${timeStr}`;
+
+      const clockEl = document.getElementById('live-clock-text');
+      if (clockEl) clockEl.textContent = `${fullDateStr} • ${timeStr}`;
 
       const msLeft = Math.max(0, cal.nextSunday.getTime() - cal.now.getTime());
       const daysLeft = Math.floor(msLeft / MS_PER_DAY);
-      const hrsLeft = Math.floor((msLeft % MS_PER_DAY) / 3600000);
-      const minsLeft = Math.floor((msLeft % 3600000) / 60000);
-      document.getElementById('countdown-text').textContent = t.countdown(daysLeft, hrsLeft, minsLeft);
+      const hrsLeft = Math.floor((msLeft % MS_PER_DAY) / (3600 * 1000));
+      const minsLeft = Math.floor((msLeft % (3600 * 1000)) / (60 * 1000));
+
+      const cdEl = document.getElementById('countdown-text');
+      if (cdEl) {
+        cdEl.textContent = state.lang === 'ar'
+          ? `بعد ${daysLeft} يوم و ${hrsLeft} ساعة و ${minsLeft} دقيقة`
+          : `in ${daysLeft}d ${hrsLeft}h ${minsLeft}m`;
+      }
     }
 
-    let lastRenderedDay = null;
-
+    // =========================================================================
+    // 8. FULL UI RENDER (Runs only on state change or midnight rollover)
+    // =========================================================================
     function render() {
-      const t = TEXT[prefs.lang];
+      const t = TEXT[state.lang];
       const locale = t.locale;
       const cal = getCalendarData();
       const currentAssign = ROTATION[cal.rotationIndex];
-      lastRenderedDay = toWeekKey(cal.now);
+      const weekRecs = getWeekRecord(cal.weekKey);
+      lastRenderedDayKey = toDateKey(cal.now);
 
-      document.documentElement.lang = prefs.lang;
+      document.documentElement.lang = state.lang;
       document.documentElement.dir = t.dir;
+      document.documentElement.classList.toggle('light', state.theme === 'light');
 
       document.getElementById('app-title').textContent = t.appTitle;
+      document.getElementById('sync-note').textContent = t.syncNote;
       document.getElementById('lang-btn').textContent = t.langBtn;
-      document.getElementById('next-rotate-label').textContent = t.nextRotateLabel;
+      document.getElementById('theme-btn').textContent = state.theme === 'dark' ? t.themeLight : t.themeDark;
+      document.getElementById('identity-label').textContent = t.idLabel;
+      document.getElementById('progress-title').textContent = t.progressTitle;
       document.getElementById('table-title').textContent = t.tableTitle;
       document.getElementById('table-hint').textContent = t.tableHint;
       document.getElementById('th-week').textContent = t.thWeek;
+      document.getElementById('th-verif').textContent = t.thVerif;
+      document.getElementById('equity-box').innerHTML = t.equityHTML;
       document.getElementById('sim-label').textContent = t.simLabel;
-      document.getElementById('qr-title').textContent = t.qrTitle;
-      document.getElementById('qr-sub').textContent = t.qrSub;
-      document.getElementById('qr-close').textContent = t.qrClose;
 
-      const syncEl = document.getElementById('sync-status');
-      syncEl.textContent = hasRemoteApi ? t.sync.cloud : t.sync.ready;
-      syncEl.className = 'sync-status ok';
+      tickClockOnly();
 
-      renderClock();
+      // Render Personal Identity Filter Pills
+      const idContainer = document.getElementById('identity-pills');
+      idContainer.innerHTML = '';
+      ['ALL', ...ROOMMATES].forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'id-pill' + (state.me === item ? ' active' : '');
+        btn.textContent = item === 'ALL' ? t.idAll : item;
+        btn.addEventListener('click', () => setIdentity(item));
+        idContainer.appendChild(btn);
+      });
 
-      // Week Badge & Date Range
-      document.getElementById('week-badge').textContent = t.weekBadge(cal.rotationIndex + 1);
+      // Active Week Badge & Dates
+      const activeWeekNum = cal.eightWeekIndex + 1;
+      const activeCycleNum = cal.eightWeekIndex < 4 ? 1 : 2;
+      document.getElementById('week-badge').textContent = t.weekBadge(activeWeekNum, activeCycleNum);
+
       const startStr = cal.weekStartSunday.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' });
       const endStr = cal.weekEndSaturday.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
       document.getElementById('week-dates').textContent = `${startStr} – ${endStr}`;
 
-      // Render 7-Day Visual Date Calendar Strip
+      const nextWeekNum = ((cal.eightWeekIndex + 1) % 8) + 1;
+      const nextSunStr = cal.nextSunday.toLocaleDateString(locale, { month: 'short', day: 'numeric' });
+      document.getElementById('next-rotate-label').textContent = t.nextRotateLabel(nextWeekNum, nextSunStr);
+
+      // Render 7-Day Visual Strip
       const strip = document.getElementById('week-strip');
       strip.innerHTML = '';
       for (let d = 0; d < 7; d++) {
-        const cellDate = anchorPlusDays(cal.weeksElapsed * 7 + d);
+        const cellDate = addDaysLocal(cal.weeksElapsed * 7 + d, 0);
         const isToday = d === cal.dayOfWeek;
         const dName = cellDate.toLocaleDateString(locale, { weekday: 'short' });
-        const dMonth = cellDate.toLocaleDateString(locale, { month: 'short' });
         const dNum = cellDate.getDate();
 
         let cls = 'day-cell';
@@ -909,28 +1239,41 @@
         cell.innerHTML = `
           <span class="day-name">${dName}</span>
           <span class="day-num">${dNum}</span>
-          <span class="day-month">${dMonth}</span>
           ${tagHTML}
         `;
         strip.appendChild(cell);
       }
 
-      // Render 4 Roommate Cards
+      // Check Kitchen completion for Floor dependency hint
+      const kitchenPerson = ROOMMATES.find(p => currentAssign[p] === 'Kitchen');
+      const isKitchenClean = weekRecs[kitchenPerson] && weekRecs[kitchenPerson].done;
+
+      // Sort Roommates so selected user ("me") is pinned first
+      const orderedRoommates = [...ROOMMATES].sort((a, b) => {
+        if (a === state.me) return -1;
+        if (b === state.me) return 1;
+        return 0;
+      });
+
       const grid = document.getElementById('cards-grid');
       grid.innerHTML = '';
       let doneTotal = 0;
-      let dutyTotal = 0;
 
-      ROOMMATES.forEach(person => {
+      ROOMMATES.forEach(p => {
+        if (currentAssign[p] !== 'Off' && weekRecs[p].done) doneTotal++;
+      });
+
+      const graceAllowed = isGraceWindowOpen(cal.dayOfWeek);
+
+      orderedRoommates.forEach(person => {
         const roleKey = currentAssign[person];
         const taskInfo = t.tasks[roleKey];
-        const rec = getPersonRecord(cal.weekKey, person);
+        const rec = weekRecs[person];
         const isOff = roleKey === 'Off';
-
-        if (!isOff) dutyTotal++;
-        if (!isOff && rec.done) doneTotal++;
+        const isMe = state.me === person;
 
         let cardClass = 'card';
+        if (isMe) cardClass += ' is-me';
         let badgeHTML = '';
 
         if (isOff) {
@@ -938,7 +1281,7 @@
           badgeHTML = `<span class="badge badge-off">${t.badges.off}</span>`;
         } else if (rec.done) {
           cardClass += ' is-done';
-          badgeHTML = `<span class="badge badge-done">${t.badges.done(formatDoneTime(rec.doneAt, locale))}</span>`;
+          badgeHTML = `<span class="badge badge-done">${t.badges.done(rec.time)}</span>`;
         } else if (cal.dayOfWeek === 0) {
           if (rec.grace) {
             cardClass += ' is-grace';
@@ -959,43 +1302,75 @@
           badgeHTML = `<span class="badge badge-overdue">${t.badges.overdue}</span>`;
         }
 
+        const checksHTML = taskInfo.checks.length
+          ? `<div class="subtasks">${taskInfo.checks.map(c => `<span class="subtask-pill">✓ ${c}</span>`).join('')}</div>`
+          : '';
+
+        let depHintHTML = '';
+        if (roleKey === 'Floor' && !rec.done) {
+          depHintHTML = `<div class="dep-hint ${isKitchenClean ? 'ready' : ''}">
+            ${isKitchenClean ? t.depReady(kitchenPerson) : t.depWait(kitchenPerson)}
+          </div>`;
+        }
+
+        let graceBtnLabel = t.buttons.grace;
+        if (!graceAllowed && !rec.done) {
+          graceBtnLabel = t.buttons.graceClosed;
+        } else if (rec.grace) {
+          graceBtnLabel = t.buttons.graceOn;
+        }
+
         const card = document.createElement('div');
         card.className = cardClass;
         card.innerHTML = `
           <div>
             <div class="card-head">
-              <span class="task-icon">${taskInfo.icon}</span>
+              <div class="avatar-wrap">
+                <div class="task-icon">${taskInfo.icon}</div>
+                <div>
+                  <div class="person-name">
+                    <span>${person}</span>
+                    ${isMe ? `<span class="me-tag">${t.youTag}</span>` : ''}
+                  </div>
+                  <div class="role-title">${taskInfo.name}</div>
+                </div>
+              </div>
               ${badgeHTML}
             </div>
-            <div class="person-name">${person}</div>
-            <div class="role-title">${taskInfo.name}</div>
             <div class="role-desc">${taskInfo.desc}</div>
+            ${checksHTML}
+            ${depHintHTML}
           </div>
           ${!isOff ? `
             <div class="card-actions">
               <button type="button" class="${rec.done ? 'btn-action-undo' : 'btn-action-done'}" data-action="done" data-person="${person}">
                 ${rec.done ? t.buttons.undo : t.buttons.done}
               </button>
-              <button type="button" class="btn-action-grace ${rec.grace ? 'active' : ''}" data-action="grace" data-person="${person}" ${rec.done ? 'disabled' : ''}>
-                ${rec.grace ? t.buttons.graceOn : t.buttons.grace}
+              <button type="button" class="btn-action-grace ${rec.grace && graceAllowed ? 'active' : ''}" data-action="grace" data-person="${person}" ${(rec.done || !graceAllowed) ? 'disabled' : ''}>
+                ${graceBtnLabel}
               </button>
             </div>
           ` : `
-            <div class="card-note">${t.chill}</div>
+            <div style="padding-top:12px; border-top:1px solid var(--border); font-size:12px; color:var(--muted); text-align:center; font-weight:700;">
+              😎 100% Chill Week — Zero Labor Obligations
+            </div>
           `}
         `;
         grid.appendChild(card);
       });
 
-      document.getElementById('done-counter').textContent = t.doneCounter(doneTotal, dutyTotal);
+      // Update Progress Bar
+      const pct = Math.round((doneTotal / 3) * 100);
+      document.getElementById('done-counter').textContent = t.doneCounter(doneTotal, pct);
+      document.getElementById('progress-fill').style.width = `${pct}%`;
 
-      // Daily Status Banner
+      // Daily Banner
       const dailyBanner = document.getElementById('daily-banner');
       const dailyMsg = document.getElementById('daily-status-msg');
       const dayName = cal.now.toLocaleDateString(locale, { weekday: 'long' });
 
-      if (dutyTotal > 0 && doneTotal === dutyTotal) {
-        dailyBanner.className = 'day-banner day-alldone';
+      if (doneTotal === 3) {
+        dailyBanner.className = 'day-banner day-sun';
         dailyMsg.textContent = t.dayMessages.allDone;
       } else if (cal.dayOfWeek === 0) {
         dailyBanner.className = 'day-banner day-sun';
@@ -1011,84 +1386,115 @@
         dailyMsg.textContent = t.dayMessages.late(dayName);
       }
 
-      // Render 4-Week Table with Real Sunday Dates
+      // Highlight selected user's column header
+      ROOMMATES.forEach(p => {
+        const th = document.getElementById(`th-${p}`);
+        if (th) th.className = (state.me === p) ? 'highlight-col' : '';
+      });
+
+      // Render 2-Month (8-Week) Table with localized dates & wrap-around NEXT badge
       const tbody = document.getElementById('schedule-tbody');
       tbody.innerHTML = '';
-      const cycleBaseWeeks = cal.weeksElapsed - cal.rotationIndex;
+      const eightWeekBlockStart = Math.floor(cal.weeksElapsed / 8) * 8;
+      const nextEightIdx = (cal.eightWeekIndex + 1) % 8;
 
-      ROTATION.forEach((row, idx) => {
-        const isCurrent = idx === cal.rotationIndex;
-        const rowSunday = anchorPlusDays((cycleBaseWeeks + idx) * 7);
+      for (let idx = 0; idx < 8; idx++) {
+        if (idx === 0 || idx === 4) {
+          const headerTr = document.createElement('tr');
+          headerTr.className = 'cycle-row';
+          headerTr.innerHTML = `<td colspan="6">${idx === 0 ? t.cycle1Header : t.cycle2Header}</td>`;
+          tbody.appendChild(headerTr);
+        }
+
+        const absWeek = eightWeekBlockStart + idx;
+        const rotIdx = idx % 4;
+        const row = ROTATION[rotIdx];
+        const rowSunday = addDaysLocal(absWeek * 7, 0);
+        const rowKey = toDateKey(rowSunday);
         const sunDateStr = rowSunday.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
+
+        const isCurrent = idx === cal.eightWeekIndex;
+        const isNext = idx === nextEightIdx;
+        const isDone = isWeekFullyDone(rowKey, rotIdx);
 
         const tr = document.createElement('tr');
         if (isCurrent) tr.className = 'active-row';
-        else if (idx < cal.rotationIndex) tr.className = 'done-row';
+        else if (isDone && idx < cal.eightWeekIndex) tr.className = 'completed-row';
 
-        let statusTag = '';
-        if (idx < cal.rotationIndex || (isCurrent && doneTotal === dutyTotal)) {
-          statusTag = `<span class="row-tag row-tag-done">${t.rowTags.done}</span>`;
-        } else if (isCurrent) {
-          statusTag = `<span class="row-tag row-tag-active">${t.rowTags.active}</span>`;
-        } else if (idx === cal.rotationIndex + 1) {
-          statusTag = `<span class="row-tag row-tag-next">${t.rowTags.next}</span>`;
-        }
-
-        const cell = (rKey) => {
-          const name = t.tasks[rKey].name;
-          return rKey === 'Off' ? `<span class="off-pill">${name}</span>` : name;
+        const cell = (person) => {
+          const rKey = row[person];
+          const label = t.tasks[rKey].short;
+          const colClass = state.me === person ? 'highlight-col' : '';
+          const inner = rKey === 'Off' ? `<span class="off-pill">${label}</span>` : label;
+          return `<td class="${colClass}">${inner}</td>`;
         };
 
+        let tagHTML = '';
+        if (isCurrent) tagHTML = `<span class="active-tag">${t.activeBadge}</span>`;
+        else if (isNext) tagHTML = `<span class="next-tag">${t.nextBadge}</span>`;
+
+        const verifHTML = isDone
+          ? `<span class="verif-done">${t.verifCompleted}</span>`
+          : `<span class="verif-pending">${t.verifPending}</span>`;
+
+        const weekPrefix = state.lang === 'ar' ? `أسبوع ${idx + 1}` : `W${idx + 1}`;
+
         tr.innerHTML = `
-          <td>W${idx + 1} (${sunDateStr}) ${statusTag}</td>
-          ${ROOMMATES.map(p => `<td>${cell(row[p])}</td>`).join('')}
+          <td>${weekPrefix} — ${sunDateStr} ${tagHTML}</td>
+          ${cell('Saif')}
+          ${cell('Wesdom')}
+          ${cell('Mohammed')}
+          ${cell('Saber')}
+          <td>${verifHTML}</td>
         `;
         tbody.appendChild(tr);
-      });
+      }
 
-      // Simulator Buttons
-      document.querySelectorAll('#test-btns .test-btn').forEach(el => {
-        el.textContent = t.simButtons[el.dataset.mode];
-        el.classList.toggle('active', el.dataset.mode === testMode);
+      // Simulator buttons
+      Object.keys(t.simBtns).forEach(mode => {
+        const el = document.getElementById(`sim-${mode}`);
+        if (el) {
+          el.textContent = t.simBtns[mode];
+          el.className = (testMode === mode) ? 'test-btn active' : 'test-btn';
+        }
       });
     }
 
     // =========================================================================
-    // 7. WHATSAPP & QR MODAL
+    // 9. WHATSAPP SYNC LINK & QR MODAL
     // =========================================================================
-    function pageUrl() {
-      return window.location.origin + window.location.pathname;
-    }
-
     function shareWhatsApp() {
-      const t = TEXT[prefs.lang];
+      const t = TEXT[state.lang];
       const cal = getCalendarData();
       const row = ROTATION[cal.rotationIndex];
+      const recs = getWeekRecord(cal.weekKey);
+      const activeWeekNum = cal.eightWeekIndex + 1;
+      const activeCycleNum = cal.eightWeekIndex < 4 ? 1 : 2;
 
-      const lines = [`🧼 *${t.appTitle} — ${t.weekBadge(cal.rotationIndex + 1)}*`];
+      const lines = [`🧼 *${t.appTitle} — ${t.weekBadge(activeWeekNum, activeCycleNum)}*`];
       ROOMMATES.forEach(p => {
         const rKey = row[p];
-        const taskName = t.tasks[rKey].name;
-        const rec = getPersonRecord(cal.weekKey, p);
+        const taskName = t.tasks[rKey].short;
         if (rKey === 'Off') {
           lines.push(`👑 *${p}:* ${taskName}`);
         } else {
-          const st = rec.done
-            ? t.badges.done(formatDoneTime(rec.doneAt, t.locale))
-            : (rec.grace ? t.badges.grace : '❌');
+          const st = recs[p].done
+            ? t.badges.done(recs[p].time)
+            : (recs[p].grace ? t.badges.grace : '❌');
           lines.push(`${t.tasks[rKey].icon} *${p} (${taskName}):* ${st}`);
         }
       });
-      lines.push('', `${t.waLink} ${pageUrl()}`);
-      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('
-'))}`, '_blank', 'noopener');
+
+      const syncUrl = buildSyncURL(cal.weekKey);
+      lines.push('', `🔗 *Tap to sync status on your phone:*`, syncUrl);
+      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
     }
 
     function openQRModal() {
-      const url = encodeURIComponent(pageUrl());
+      const cal = getCalendarData();
+      const url = encodeURIComponent(buildSyncURL(cal.weekKey));
       document.getElementById('qr-img').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${url}`;
       document.getElementById('qr-modal').classList.add('open');
-      document.getElementById('qr-close').focus();
     }
 
     function closeQRModal() {
@@ -1096,57 +1502,44 @@
     }
 
     // =========================================================================
-    // 8. EVENT LISTENERS & AUTO-REFRESH
+    // 10. EVENT DELEGATION & NON-DESTRUCTIVE TIMER
     // =========================================================================
+    document.getElementById('theme-btn').addEventListener('click', toggleTheme);
+    document.getElementById('lang-btn').addEventListener('click', toggleLang);
     document.getElementById('wa-btn').addEventListener('click', shareWhatsApp);
     document.getElementById('qr-btn').addEventListener('click', openQRModal);
-    document.getElementById('lang-btn').addEventListener('click', () => {
-      prefs.lang = prefs.lang === 'en' ? 'ar' : 'en';
-      safeSet(PREFS_KEY, prefs);
-      render();
-    });
     document.getElementById('qr-close').addEventListener('click', closeQRModal);
     document.getElementById('qr-modal').addEventListener('click', (e) => {
       if (e.target.id === 'qr-modal') closeQRModal();
     });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeQRModal();
-    });
-    document.getElementById('test-btns').addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-mode]');
-      if (btn) {
-        testMode = btn.dataset.mode;
-        render();
-      }
-    });
+
     document.getElementById('cards-grid').addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-action]');
       if (!btn || btn.disabled) return;
       const person = btn.dataset.person;
-      const rec = getPersonRecord(getCalendarData().weekKey, person);
-      if (btn.dataset.action === 'done') saveStatus(person, { done: !rec.done });
-      if (btn.dataset.action === 'grace') saveStatus(person, { grace: !rec.grace });
+      if (btn.dataset.action === 'done') toggleDone(person);
+      if (btn.dataset.action === 'grace') toggleGrace(person);
     });
 
-    render();
-    fetchRemoteWeek(getCalendarData().weekKey);
+    document.getElementById('test-btns').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-mode]');
+      if (!btn) return;
+      setTestDay(btn.dataset.mode);
+    });
 
+    // Initial render
+    render();
+
+    // Tick ONLY the clock every second; full re-render ONLY when midnight rolls over
     setInterval(() => {
       if (testMode !== 'LIVE') return;
-      const today = toWeekKey(new Date());
-      if (today !== lastRenderedDay) {
+      const currentKey = toDateKey(new Date());
+      if (currentKey !== lastRenderedDayKey) {
         render();
-        fetchRemoteWeek(getCalendarData().weekKey);
       } else {
-        renderClock();
+        tickClockOnly();
       }
     }, 1000);
-
-    setInterval(() => {
-      if (testMode === 'LIVE' && !document.hidden) {
-        fetchRemoteWeek(getCalendarData().weekKey);
-      }
-    }, POLL_MS);
   </script>
 </body>
 </html>
